@@ -7,7 +7,7 @@
 
   <!-- iOS PWA Capabilities -->
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="miogelato">
   <link rel="apple-touch-icon" href="./mio-circle.png">
 
@@ -39,11 +39,9 @@
       position: sticky;
       top: 0;
       z-index: 30;
-      background: rgba(249, 249, 249, 0.92);
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
+      background: #F9F9F9;
       border-bottom: 0.5px solid rgba(0, 0, 0, 0.12);
-      padding-top: max(12px, env(safe-area-inset-top));
+      padding-top: max(10px, env(safe-area-inset-top));
       padding-bottom: 10px;
       padding-left: 16px;
       padding-right: 16px;
@@ -118,7 +116,7 @@
       box-shadow: 0 1px 2px rgba(0,0,0,0.04);
     }
 
-    /* Grab Handle Visibility Control */
+    /* Grab Handle & Divider Delete Visibility Control */
     .drag-handle {
       color: #aeaeb2;
       cursor: grab;
@@ -127,9 +125,24 @@
       font-size: 13px;
       display: none; /* Hidden by default */
     }
-    .rearranging .drag-handle {
-      display: inline-block; /* Shown when rearranging mode is active */
+    .divider-delete-btn {
+      border: none;
+      background: #e5e5ea;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      cursor: pointer;
+      color: #3a3a3c;
+      display: none; /* Hidden by default */
+      align-items: center;
+      justify-content: center;
     }
+
+    .rearranging .drag-handle,
+    .rearranging .divider-delete-btn {
+      display: flex; /* Shown when rearranging mode is active */
+    }
+    
     .drag-handle:active {
       cursor: grabbing;
     }
@@ -637,7 +650,7 @@
               <div class="drag-handle"><i class="fa-solid fa-grip-vertical"></i></div>
               <div class="divider-line"></div>
               ${item.name ? `<span class="divider-text">${escapeHtml(item.name)}</span><div class="divider-line"></div>` : ''}
-              <button onclick="event.stopPropagation(); deleteDivider('${item.id}')" style="border:none; background:#e5e5ea; width:18px; height:18px; border-radius:50%; cursor:pointer; color:#3a3a3c; display:flex; align-items:center; justify-content:center;" title="Remove Divider"><i class="fa-solid fa-xmark" style="font-size:8px;"></i></button>
+              <button onclick="event.stopPropagation(); deleteDivider('${item.id}')" class="divider-delete-btn" title="Remove Divider"><i class="fa-solid fa-xmark" style="font-size:8px;"></i></button>
             </div>
           `;
         }
