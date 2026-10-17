@@ -137,7 +137,7 @@
     .controls {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 8px;
       flex-shrink: 0;
     }
 
@@ -163,11 +163,11 @@
 
     .stock-box {
       min-width: 24px;
-      text-align: right;
+      text-align: left;
       display: flex;
-      justify-content: flex-end;
+      justify-content: flex-start;
       align-items: center;
-      margin-left: 2px;
+      margin-right: 2px;
     }
 
     .stock-num {
@@ -617,12 +617,12 @@
             </div>
 
             <div class="controls">
+              <div class="stock-box">
+                <span class="stock-num">${item.stock}</span>
+              </div>
               <div style="display: flex; gap: 3px;">
                 <button onclick="adjustStock('${item.id}', -1)" class="btn-press btn-count">-</button>
                 <button onclick="adjustStock('${item.id}', 1)" class="btn-press btn-count plus">+</button>
-              </div>
-              <div class="stock-box">
-                <span class="stock-num">${item.stock}</span>
               </div>
             </div>
           </div>
