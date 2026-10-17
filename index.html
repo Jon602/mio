@@ -342,6 +342,32 @@
     .hidden {
       display: none !important;
     }
+
+    /* Compact overview mode: single column, tight rows, no dividers */
+    #flavorGrid.compact { gap: 2px; }
+    .compact .divider-row { display: none !important; }
+    .compact .draggable-row {
+      height: var(--row-h, 26px);
+      padding: 0 10px;
+      border-radius: 8px;
+      box-shadow: none;
+    }
+    .compact .controls > div:last-child,
+    .compact .drag-handle,
+    .compact .divider-delete-btn {
+      display: none !important;
+    }
+    .compact .flavor-name {
+      font-size: var(--fit-font, 12px);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
+    }
+    .compact .stock-box { margin-right: 0; justify-content: flex-end; }
+    .compact .stock-num { font-size: var(--fit-font, 12px); }
+    body.compact-mode main { padding-top: 6px; padding-bottom: 6px; }
+    body.compact-mode .stats-grid { display: none; }
   </style>
 </head>
 <body>
@@ -363,6 +389,9 @@
         <button id="editModeBtn" onclick="toggleEditMode()" class="btn-press action-btn" title="Toggle Edit Mode">
           <i class="fa-solid fa-pen-to-square" style="color: #007AFF;"></i>
           <span>Edit</span>
+        </button>
+        <button id="fitBtn" onclick="toggleCompact()" class="btn-press action-btn" title="Fit everything on one screen">
+          <i class="fa-solid fa-compress" style="color: #007AFF;"></i>
         </button>
         <button onclick="addDivider()" class="btn-press action-btn" title="Add Divider">
           <i class="fa-solid fa-grip-lines" style="color: #8e8e93;"></i>
@@ -500,6 +529,7 @@
     let auth = null;
     let sortableInstance = null;
     let isEditing = false;
+    let isCompact = false;
 
     window.addEventListener('DOMContentLoaded', () => {
       renderFlavors();
@@ -867,6 +897,61 @@
         } catch (err) { console.error(err); }
       }
     };
+
+    // ---- Fit-to-screen overview ----
+    function applyCompact() {
+      const grid = document.getElementById('flavorGrid');
+      if (!grid) return;
+
+      document.body.classList.toggle('compact-mode', isCompact);
+
+      if (!isCompact) {
+        grid.classList.remove('compact');
+        grid.style.removeProperty('--row-h');
+        grid.style.removeProperty('--fit-font');
+        return;
+      }
+
+      grid.classList.add('compact');
+      const n = window.flavors.filter(f => !f.isDivider).length;
+      if (!n) return;
+
+      window.scrollTo(0, 0);
+      const top = grid.getBoundingClientRect().top + window.scrollY;
+      const bottomPad = (parseFloat(getComputedStyle(document.body).paddingBottom) || 0) + 6;
+      const avail = (window.visualViewport ? window.visualViewport.height : window.innerHeight) - top - bottomPad;
+      const gap = 2, minRow = 24, maxRow = 40;
+
+      // Shrink rows to fit one screen if possible, but never below minRow (then it scrolls)
+      const rowH = Math.floor(Math.max(minRow, Math.min(maxRow, (avail - gap * (n - 1)) / n)));
+      grid.style.setProperty('--row-h', rowH + 'px');
+      grid.style.setProperty('--fit-font', Math.max(11, Math.min(15, rowH * 0.5)) + 'px');
+
+      // Colour the counts so low stock stands out at a glance
+      grid.querySelectorAll('.draggable-row[data-flavor-id]').forEach(row => {
+        const item = window.flavors.find(f => f.id === row.getAttribute('data-flavor-id'));
+        const num = row.querySelector('.stock-num');
+        if (!item || !num) return;
+        const stock = Number(item.stock) || 0;
+        num.style.color = stock <= 0 ? '#FF3B30' : stock <= 2 ? '#FF9500' : '';
+      });
+    }
+
+    window.toggleCompact = function() {
+      isCompact = !isCompact;
+      if (isCompact && isEditing) window.toggleEditMode();
+      const btn = document.getElementById('fitBtn');
+      btn.classList.toggle('active', isCompact);
+      btn.querySelector('i').className = isCompact ? 'fa-solid fa-expand' : 'fa-solid fa-compress';
+      btn.title = isCompact ? 'Back to normal view' : 'Fit everything on one screen';
+      applyCompact();
+    };
+
+    // Re-fit after every render (sync updates, edits) and when the screen changes
+    const baseRender = window.renderFlavors;
+    window.renderFlavors = function() { baseRender(); applyCompact(); };
+    window.addEventListener('resize', applyCompact);
+    window.addEventListener('orientationchange', () => setTimeout(applyCompact, 200));
 
     window.openPwaModal = function() { document.getElementById('pwaModal').classList.remove('hidden'); }
     window.closePwaModal = function() { document.getElementById('pwaModal').classList.add('hidden'); }
