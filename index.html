@@ -117,4 +117,164 @@
           <i class="fa-solid fa-grip-lines text-slate-500"></i>
           <span class="hidden sm:inline">Add Divider</span>
         </button>
-        <button onclick="openAddFlavorModal()" class="btn-press w-8 h-8 rounded-full bg-iosBlue text-white flex items-center justify-center shadow-md
+        <button onclick="openAddFlavorModal()" class="btn-press w-8 h-8 rounded-full bg-iosBlue text-white flex items-center justify-center shadow-md shadow-blue-200" title="Add New Flavor">
+          <i class="fa-solid fa-plus text-xs"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-3 sm:px-6 pt-3 w-full flex-grow">
+
+    <!-- Metrics Summary Dashboard -->
+    <section class="grid grid-cols-2 gap-2.5 mb-3">
+      <div class="glass-card rounded-2xl p-2.5 sm:p-3 text-center shadow-sm">
+        <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Total Tubs</p>
+        <p id="statTotalStock" class="text-xl sm:text-2xl font-black text-slate-800 mt-0.5">0</p>
+      </div>
+      <div class="glass-card rounded-2xl p-2.5 sm:p-3 text-center shadow-sm">
+        <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Flavors</p>
+        <p id="statTotalFlavors" class="text-xl sm:text-2xl font-black text-slate-800 mt-0.5">0</p>
+      </div>
+    </section>
+
+    <!-- Search & Filter Controls -->
+    <section class="mb-3 space-y-2">
+      <div class="flex flex-col sm:flex-row gap-2">
+        <!-- Search Input -->
+        <div class="relative flex-grow">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+          <input type="text" id="searchInput" oninput="renderFlavors()" placeholder="Search flavors..." 
+            class="w-full pl-9 pr-4 py-2 rounded-2xl bg-white border border-slate-200/80 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-iosBlue/50 shadow-sm transition">
+        </div>
+      </div>
+
+      <!-- Quick Utilities Bar -->
+      <div class="flex items-center justify-between text-[11px] text-slate-500 px-1">
+        <button onclick="addDivider()" class="text-slate-600 font-semibold hover:underline flex items-center space-x-1 sm:hidden">
+          <i class="fa-solid fa-grip-lines text-[10px]"></i>
+          <span>Add Divider</span>
+        </button>
+        <div class="flex items-center space-x-2.5 ml-auto">
+          <button onclick="promptRestockAll()" class="text-iosBlue font-semibold hover:underline flex items-center space-x-1">
+            <i class="fa-solid fa-arrows-rotate text-[10px]"></i>
+            <span>Restock All</span>
+          </button>
+          <span>|</span>
+          <button onclick="resetToDefaultsPrompt()" class="text-slate-400 hover:text-rose-500 font-medium transition">
+            Reset Order
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Compact Full-Width Vertical List -->
+    <section id="flavorGrid" class="flex flex-col space-y-1.5 w-full">
+      <!-- Row Cards rendered via JS -->
+    </section>
+
+    <!-- Empty State Container -->
+    <div id="emptyState" class="hidden text-center py-12 px-4">
+      <div class="w-12 h-12 mx-auto mb-2 text-slate-300">
+        <i class="fa-solid fa-box-open text-4xl"></i>
+      </div>
+      <h3 class="text-sm font-semibold text-slate-700">No flavors found</h3>
+      <p class="text-xs text-slate-500 mt-0.5">Try adjusting search settings.</p>
+    </div>
+
+  </main>
+
+  <!-- EDIT FLAVOR MODAL -->
+  <div id="editModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-md w-full p-5 shadow-2xl transform transition-all">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-base font-bold text-slate-900">Edit Flavor Details</h3>
+        <button onclick="closeEditModal()" class="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200">
+          <i class="fa-solid fa-xmark text-xs"></i>
+        </button>
+      </div>
+
+      <input type="hidden" id="editFlavorId">
+
+      <div class="space-y-3.5 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-500 uppercase mb-1">Flavor Name</label>
+          <input type="text" id="editFlavorName" class="w-full px-3 py-2 rounded-xl border border-slate-200 font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-iosBlue">
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-500 uppercase mb-1">Stock Tubs Count</label>
+          <input type="number" id="editFlavorStock" min="0" class="w-full px-3 py-2 rounded-xl border border-slate-200 font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-iosBlue">
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-2 mt-5">
+        <button onclick="deleteCurrentFlavor()" class="px-3.5 py-2 rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50 text-xs font-bold transition">
+          Delete
+        </button>
+        <div class="flex-grow flex space-x-2">
+          <button onclick="closeEditModal()" class="flex-1 py-2 rounded-xl border border-slate-200 text-slate-600 text-xs font-bold hover:bg-slate-50">
+            Cancel
+          </button>
+          <button onclick="saveFlavorEdit()" class="flex-1 py-2 rounded-xl bg-iosBlue text-white text-xs font-bold shadow-md shadow-blue-200 hover:bg-blue-600">
+            Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD FLAVOR MODAL -->
+  <div id="addModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-md w-full p-5 shadow-2xl">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-base font-bold text-slate-900">Add New Flavor</h3>
+        <button onclick="closeAddModal()" class="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200">
+          <i class="fa-solid fa-xmark text-xs"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-500 uppercase mb-1">Flavor Name</label>
+          <input type="text" id="addFlavorName" placeholder="e.g. Salted Caramel Crunch" class="w-full px-3 py-2 rounded-xl border border-slate-200 font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-iosBlue">
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-500 uppercase mb-1">Initial Stock Level</label>
+          <input type="number" id="addFlavorStock" value="10" min="0" class="w-full px-3 py-2 rounded-xl border border-slate-200 font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-iosBlue">
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-2 mt-5">
+        <button onclick="closeAddModal()" class="flex-1 py-2 rounded-xl border border-slate-200 text-slate-600 text-xs font-bold hover:bg-slate-50">
+          Cancel
+        </button>
+        <button onclick="saveNewFlavor()" class="flex-1 py-2 rounded-xl bg-iosBlue text-white text-xs font-bold shadow-md shadow-blue-200 hover:bg-blue-600">
+          Add Flavor
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- iOS PWA INSTALLATION MODAL -->
+  <div id="pwaModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+    <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-md w-full p-5 shadow-2xl border border-slate-100">
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-pink-500 to-rose-400 flex items-center justify-center text-white shadow-md">
+            <i class="fa-solid fa-ice-cream text-xl"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-slate-900">Install ScoopTrack</h3>
+            <p class="text-[11px] text-slate-500">Use like an iOS App</p>
+          </div>
+        </div>
+        <button onclick="closePwaModal()" class="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-500">
+          <i class="fa-solid fa-xmark text-xs"></i>
+        </button>
+      </div>
+
+      <div class="space-y-2.5 my-3 text-xs text-slate-600 leading-relaxed">
+        <div class="flex items-start space-x-2.5 bg-slate-50 p-2.5 rounded-xl">
+          <span class="
