@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>ScoopTrack - Ice Cream Stock Tracker</title>
+
+  <!-- iOS PWA Capabilities -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ScoopTrack">
+  <link rel="apple-touch-icon" href="https://img.icons8.com/3d-fluency/180/ice-cream-cone.png">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', 'Inter', 'sans-serif'],
+          },
+          colors: {
+            iosBg: '#F2F2F7',
+            iosCard: 'rgba(255, 255, 255, 0.88)',
+            iosBlue: '#007AFF',
+            iosRed: '#FF3B30',
+            iosGreen: '#34C759',
+            iosAmber: '#FF9500',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- SortableJS for flawless Mobile & Desktop Touch Dragging -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+
+  <style>
+    /* iOS Custom Styling & Touch Enhancements */
+    body {
+      background-color: #F2F2F7;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      padding-bottom: env(safe-area-inset-bottom, 20px);
+      padding-top: env(safe-area-inset-top, 0px);
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.90);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+    }
+
+    .glass-nav {
+      background: rgba(249, 249, 249, 0.88);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border-bottom: 0.5px solid rgba(0, 0, 0, 0.12);
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.15);
+      border-radius: 10px;
+    }
+
+    .btn-press {
+      transition: transform 0.1s ease, opacity 0.1s ease;
+    }
+    .btn-press:active {
+      transform: scale(0.93);
+      opacity: 0.8;
+    }
+
+    /* Sortable Dragging Visual State */
+    .sortable-ghost {
+      opacity: 0.3;
+      background-color: #bae6fd !important;
+    }
+    .sortable-chosen {
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+<body class="text-slate-900 font-sans antialiased min-h-screen flex flex-col pb-12">
+
+  <!-- Header / Navigation Bar -->
+  <header class="sticky top-0 z-30 glass-nav px-4 py-3 sm:px-6 shadow-sm">
+    <div class="max-w-4xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-2.5">
+        <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-pink-500 to-rose-400 flex items-center justify-center text-white shadow-md shadow-pink-200">
+          <i class="fa-solid fa-ice-cream text-lg"></i>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold tracking-tight text-slate-900 leading-tight">ScoopTrack</h1>
+          <p class="text-[11px] text-slate-500 font-medium leading-none" id="syncStatus">
+            <i class="fa-solid fa-circle-notch fa-spin text-iosBlue mr-1"></i> Loading app...
+          </p>
+        </div>
+      </div>
+
+      <!-- Header Action Buttons -->
+      <div class="flex items-center space-x-2">
+        <button onclick="openPwaModal()" class="btn-press px-3 py-1.5 rounded-full bg-white/80 border border-slate-200 text-xs font-semibold text-slate-700 shadow-sm flex items-center space-x-1">
+          <i class="fa-solid fa-square-plus text-iosBlue"></i>
+          <span class="hidden sm:inline">Add to Home Screen</span>
+        </button>
+        <button onclick="addDivider()" class="btn-press px-3 py-1.5 rounded-full bg-slate-200/80 border border-slate-300 text-xs font-semibold text-slate-700 shadow-sm flex items-center space-x-1" title="Add Divider">
+          <i class="fa-solid fa-grip-lines text-slate-500"></i>
+          <span class="hidden sm:inline">Add Divider</span>
+        </button>
+        <button onclick="openAddFlavorModal()" class="btn-press w-8 h-8 rounded-full bg-iosBlue text-white flex items-center justify-center shadow-md shadow-blue-200" title="Add New Flavor">
+          <i class="fa-solid fa-plus text-xs"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-3 sm:px-6 pt-3 w-full flex-grow">
+
+    <!-- Metrics Summary Dashboard -->
+    <section class="grid grid-cols-2 gap-2.5 mb-3">
+      <div class="glass-card rounded-2xl p-2.5 sm:p-3 text-center shadow-sm">
+        <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Total Tubs</p>
+        <p id="statTotalStock" class="text-xl sm:text-2xl font-black text-slate-800 mt-0.5">0</p>
+      </div>
+      <div class="glass-card rounded-2xl p-2.5 sm:p-3 text-center shadow-sm">
+        <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Flavors</p>
+        <p id="statTotalFlavors" class="text-xl sm:text-2xl font-black text-slate-800 mt-0.5">0</p>
+      </div>
+    </section>
+
+    <!-- Search & Filter Controls -->
+    <section class="mb-3 space-y-2">
+      <div class="flex flex-col sm:flex-row gap-2">
+        <!-- Search Input -->
+        <div class="relative flex-grow">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+          <input type="text" id="searchInput" oninput="renderFlavors()" placeholder="Search flavors..." 
+            class="w-full pl-9 pr-4 py-2 rounded-2xl bg-white border border-slate-200/80 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-iosBlue/50 shadow-sm transition">
+        </div>
+      </div>
+
+      <!-- Quick Utilities Bar -->
+      <div class="flex items-center justify-between text-[11px] text-slate-500 px-1">
+        <button onclick="addDivider()" class="text-slate-600 font-semibold hover:underline flex items-center space-x-1 sm:hidden">
+          <i class="fa-solid fa-grip-lines text-[10px]"></i>
+          <span>Add Divider</span>
+        </button>
+        <div class="flex items-center space-x-2.5 ml-auto">
+          <button onclick="promptRestockAll()" class="text-iosBlue font-semibold hover:underline flex items-center space-x-1">
+            <i class="fa-solid fa-arrows-rotate text-[10px]"></i>
+            <span>Restock All</span>
+          </button>
+          <span>|</span>
+          <button onclick="resetToDefaultsPrompt()" class="text-slate-400 hover:text-rose-500 font-medium transition">
+            Reset Order
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Compact Full-Width Vertical List -->
+    <section id="flavorGrid" class="flex flex-col space-y-1.5 w-full">
+      <!-- Row Cards rendered via JS -->
+    </section>
+
+    <!-- Empty State Container -->
+    <div id="emptyState" class="hidden text-center py-12 px-4">
+      <div class="w-12 h-12 mx-auto mb-2 text-slate-300">
+        <i class="fa-solid fa-box-open text-4xl"></i>
+      </div>
+      <h3 class="text-sm font-semibold text-slate-700">No flavors found</h3>
+      <p class="text-xs text-slate-500 mt-0.5">Try adjusting search settings.</p>
+    </div>
+
+  </main>
+
+  <!-- EDIT FLAVOR MODAL -->
+  <div id="editModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-md w-full p-5 shadow-2xl transform transition-all">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-base font-bold text-slate-900">Edit Flavor Details</h3>
+        <button onclick="closeEditModal()" class="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200">
+          <i class="fa-solid fa-xmark text-xs"></i>
+        </button>
+      </div>
+
+      <input type="hidden" id="editFlavorId">
+
+      <div class="space-y-3.5 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-500 uppercase mb-1">Flavor Name</label>
+          <input type="text" id="editFlavorName" class="w-full px-3 py-2 rounded-xl border border-slate-200 font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-iosBlue">
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-500 uppercase mb-1">Color Badge</label>
+          <div class="flex items-center space-x-3 mb-2">
+            <input type="color" id="editFlavorColor" class="w-9 h-9 rounded-xl border-0 cursor-pointer p-0 bg-transparent">
+            <span id="hexCodeDisplay" class="font-mono text-slate-500">#000000</span>
+          </div>
+
+          <div class="font-medium text-slate-400 mb-1">Presets:</div>
+          <div class="flex flex-wrap gap-1.5" id="colorPresets"></div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-500 uppercase mb-1">Stock Tubs Count</label>
+          <input type="number" id="editFlavorStock" min="0" class="w-full px-3 py-2 rounded-xl border border-slate-200 font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-iosBlue">
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-2 mt-5">
+        <button onclick="deleteCurrentFlavor()" class="px-3.5 py-2 rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50 text-xs font-bold transition">
+          Delete
+        </button>
+        <div class="flex-grow flex space-x-2">
+          <button onclick="closeEditModal()" class="flex-1 py-2 rounded-xl border border-slate-200 text-slate-600 text-xs font-bold hover:bg-slate-50">
+            Cancel
+          </button>
+          <button onclick="saveFlavorEdit()" class="flex-1 py-2 rounded-xl bg-iosBlue text-white text-xs font-bold shadow-md shadow-blue-200 hover:bg-blue-600">
+            Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD FLAVOR MODAL -->
+  <div id="addModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-md w-full p-5 shadow-2xl">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-base font-bold text-slate-900">Add New Flavor</h3>
+        <button onclick="closeAddModal()" class="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200">
+          <i class="fa-solid fa-xmark text-xs"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-500 uppercase mb-1">Flavor Name</label>
+          <input type="text" id="addFlavorName" placeholder="e.g. Salted Caramel Crunch" class="w-full px-3 py-2 rounded-xl border border-slate-200 font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-iosBlue">
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-500 uppercase mb-1">Badge Color</label>
+          <div class="flex items-center space-x-3">
+            <input type="color" id="addFlavorColor" value="#EC4899" class="w-9 h-9 rounded-xl border-0 cursor-pointer p-0">
+            <span class="text-slate-500 font-medium">Pick color</span>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-500 uppercase mb-1">Initial Stock Level</label>
+          <input type="number" id="addFlavorStock" value="10" min="0" class="w-full px-3 py-2 rounded-xl border border-slate-200 font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-iosBlue">
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-2 mt-5">
+        <button onclick="closeAddModal()" class="flex-1 py-2 rounded-xl border border-slate-200 text-slate-600 text-xs font-bold hover:bg-slate-50">
+          Cancel
+        </button>
+        <button onclick="saveNewFlavor()" class="flex-1 py-2 rounded-xl bg-iosBlue text-white text-xs font-bold shadow-md shadow-blue-200 hover:bg-blue-600">
+          Add Flavor
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- iOS PWA INSTALLATION MODAL -->
+  <div id="pwaModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
+    <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-md w-full p-5 shadow-2xl border border-slate-100">
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-pink-500 to-rose-400 flex items-center justify-center text-white shadow-md">
+            <i class="fa-solid fa-ice-cream text-xl"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-slate-900">Install ScoopTrack</h3>
+            <p class="text-[11px] text-slate-500">Use like an iOS App</p>
+          </div>
+        </div>
+        <button onclick="closePwaModal()" class="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-500">
+          <i class="fa-solid fa-xmark text-xs"></i>
+        </button>
+      </div>
+
+      <div class="space-y-2.5 my-3 text-xs text-slate-600 leading-relaxed">
+        <div class="flex items-start space-x-2.5 bg-slate-50 p-2.5 rounded-xl">
+          <span class="w-5 h-5 rounded-full bg-iosBlue text-white flex items-center justify-center font-bold text-[10px] shrink-0">1</span>
+          <p>Tap the <strong class="text-slate-900">Share button</strong> <i class="fa-solid fa-share-from-square text-iosBlue"></i> in Safari.</p>
+        </div>
+        <div class="flex items-start space-x-2.5 bg-slate-50 p-2.5 rounded-xl">
+          <span class="w-5 h-5 rounded-full bg-iosBlue text-white flex items-center justify-center font-bold text-[10px] shrink-0">2</span>
+          <p>Select <strong class="text-slate-900">'Add to Home Screen'</strong> <i class="fa-regular fa-square-plus text-slate-800"></i>.</p>
+        </div>
+        <div class="flex items-start space-x-2.5 bg-slate-50 p-2.5 rounded-xl">
+          <span class="w-5 h-5 rounded-full bg-iosBlue text-white flex items-center justify-center font-bold text-[10px] shrink-0">3</span>
+          <p>Tap <strong class="text-slate-900">'Add'</strong>. ScoopTrack will launch full-screen!</p>
+        </div>
+      </div>
+
+      <button onclick="closePwaModal()" class="w-full py-2.5 rounded-xl bg-slate-900 text-white text-xs font-bold">
+        Got it!
+      </button>
+    </div>
+  </div>
+
+  <!-- CONFIRMATION MODAL -->
+  <div id="confirmModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-xs w-full p-4 text-center shadow-2xl">
+      <div id="confirmIcon" class="w-10 h-10 rounded-full bg-rose-100 text-rose-500 flex items-center justify-center mx-auto mb-2 text-lg">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+      <h3 id="confirmTitle" class="text-sm font-bold text-slate-900 mb-0.5">Are you sure?</h3>
+      <p id="confirmMessage" class="text-xs text-slate-500 mb-4">This action will update all items.</p>
+      <div class="flex space-x-2">
+        <button onclick="closeConfirmModal(false)" class="flex-1 py-2 rounded-xl border border-slate-200 text-slate-600 text-xs font-bold">Cancel</button>
+        <button id="confirmActionBtn" class="flex-1 py-2 rounded-xl bg-rose-500 text-white text-xs font-bold shadow-md shadow-rose-200">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase Module Script -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, collection, doc, onSnapshot, setDoc, updateDoc, deleteDoc, writeBatch } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // Application State - Load default flavors instantly from local storage if available, else standard defaults
+    const DEFAULT_30_FLAVORS = [
+      { id: 'f1', name: 'Vanilla Bean', color: '#FFF3BF', stock: 12, order: 0, isDivider: false },
+      { id: 'f2', name: 'Double Chocolate', color: '#795548', stock: 8, order: 1, isDivider: false },
+      { id: 'f3', name: 'Strawberry Cream', color: '#FCC2D7', stock: 15, order: 2, isDivider: false },
+      { id: 'f4', name: 'Mint Choc Chip', color: '#B1F2D9', stock: 4, order: 3, isDivider: false },
+      { id: 'f5', name: 'Salted Caramel', color: '#FFD8A8', stock: 6, order: 4, isDivider: false },
+      { id: 'f6', name: 'Cookies & Cream', color: '#E9ECEF', stock: 10, order: 5, isDivider: false },
+      { id: 'f7', name: 'Mango Sorbet', color: '#FFD43B', stock: 3, order: 6, isDivider: false },
+      { id: 'f8', name: 'Pistachio', color: '#C0EB75', stock: 7, order: 7, isDivider: false },
+      { id: 'f9', name: 'Bubblegum', color: '#74C0FC', stock: 2, order: 8, isDivider: false },
+      { id: 'f10', name: 'Rum & Raisin', color: '#D946EF', stock: 9, order: 9, isDivider: false },
+      { id: 'f11', name: 'Rocky Road', color: '#8D493A', stock: 11, order: 10, isDivider: false },
+      { id: 'f12', name: 'Raspberry Ripple', color: '#FF8787', stock: 5, order: 11, isDivider: false },
+      { id: 'f13', name: 'Espresso Fudge', color: '#4E342E', stock: 1, order: 12, isDivider: false },
+      { id: 'f14', name: 'Coconut Cream', color: '#F8F9FA', stock: 8, order: 13, isDivider: false },
+      { id: 'f15', name: 'Lemon Sorbet', color: '#FFE066', stock: 14, order: 14, isDivider: false },
+      { id: 'f16', name: 'Honeycomb Crunch', color: '#FFA94D', stock: 4, order: 15, isDivider: false },
+      { id: 'f17', name: 'Banana Split', color: '#FFF0F6', stock: 6, order: 16, isDivider: false },
+      { id: 'f18', name: 'Peanut Butter Swirl', color: '#E65100', stock: 0, order: 17, isDivider: false },
+      { id: 'f19', name: 'Blackcurrant Sorbet', color: '#9C27B0', stock: 7, order: 18, isDivider: false },
+      { id: 'f20', name: 'Passionfruit', color: '#FF6F00', stock: 9, order: 19, isDivider: false },
+      { id: 'f21', name: 'Cherry Bakewell', color: '#F44336', stock: 5, order: 20, isDivider: false },
+      { id: 'f22', name: 'Cotton Candy', color: '#F06292', stock: 12, order: 21, isDivider: false },
+      { id: 'f23', name: 'Matcha Green Tea', color: '#66BB6A', stock: 4, order: 22, isDivider: false },
+      { id: 'f24', name: 'Nutella Hazelnut', color: '#5D4037', stock: 15, order: 23, isDivider: false },
+      { id: 'f25', name: 'Peach Melba', color: '#FFAB91', stock: 8, order: 24, isDivider: false },
+      { id: 'f26', name: 'Blueberry Cheesecake', color: '#5C6BC0', stock: 3, order: 25, isDivider: false },
+      { id: 'f27', name: 'Praline Hazelnut', color: '#A1887F', stock: 10, order: 26, isDivider: false },
+      { id: 'f28', name: 'Biscoff / Speculoos', color: '#FB8C00', stock: 2, order: 27, isDivider: false },
+      { id: 'f29', name: 'Salted Fudge', color: '#D7CCC8', stock: 7, order: 28, isDivider: false },
+      { id: 'f30', name: 'Dulce de Leche', color: '#FFA000', stock: 11, order: 29, isDivider: false }
+    ];
+
+    let savedLocal = localStorage.getItem('scooptrack_local_flavors');
+    window.flavors = savedLocal ? JSON.parse(savedLocal) : JSON.parse(JSON.stringify(DEFAULT_30_FLAVORS));
+    
+    let db = null;
+    let auth = null;
+    let sortableInstance = null;
+
+    const COLOR_PRESETS = [
+      '#FFF3BF', '#FFE8CC', '#FFD8A8', '#FFC9C9', '#FCC2D7', 
+      '#EEBFA8', '#D0EBFF', '#B1F2D9', '#C0EB75', '#E5DBFF',
+      '#4DABF7', '#38D9A9', '#FF922B', '#FF6B6B', '#A61E4C'
+    ];
+
+    window.addEventListener('load', () => {
+      initApp();
+    });
+
+    async function initApp() {
+      renderFlavors();
+
+      let firebaseConnected = false;
+      const connectionTimeout = setTimeout(() => {
+        if (!firebaseConnected) {
+          updateSyncStatus(true, "Offline Mode");
+        }
+      }, 1500);
+
+      try {
+        const firebaseConfig = {
+          apiKey: "AIzaSyDkn-fkyqeGFh212M3rBvvzL_YuhxB5wc4",
+          authDomain: "miogelato-532eb.firebaseapp.com",
+          projectId: "miogelato-532eb",
+          storageBucket: "miogelato-532eb.firebasestorage.app",
+          messagingSenderId: "1032455156606",
+          appId: "1:1032455156606:web:e557840246c994c393b92f"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+        auth = getAuth(app);
+
+        await signInAnonymously(auth);
+        firebaseConnected = true;
+        clearTimeout(connectionTimeout);
+
+        setupRealtimeListener();
+      } catch (err) {
+        console.warn("Cloud connection bypassed, using local mode:", err);
+        clearTimeout(connectionTimeout);
+        updateSyncStatus(true, "Offline Mode");
+      }
+    }
+
+    function setupRealtimeListener() {
+      const colRef = collection(db, 'icecream_flavors');
+      onSnapshot(colRef, (snapshot) => {
+        if (!snapshot.empty) {
+          const list = [];
+          snapshot.forEach(doc => {
+            list.push({ id: doc.id, ...doc.data() });
+          });
+          list.sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
+          window.flavors = list;
+          saveToLocalStorage();
+          updateSyncStatus(true, "Cloud Synced");
+          renderFlavors();
+        } else {
+          seedDefaultFlavors();
+        }
+      }, (error) => {
+        console.warn("Firestore listener fallback:", error);
+        updateSyncStatus(true, "Offline Mode");
+      });
+    }
+
+    async function seedDefaultFlavors() {
+      if (!db) return;
+      try {
+        const batch = writeBatch(db);
+        DEFAULT_30_FLAVORS.forEach((item, index) => {
+          const docRef = doc(db, 'icecream_flavors', item.id);
+          batch.set(docRef, { 
+            name: item.name, 
+            color: item.color, 
+            stock: item.stock, 
+            order: index, 
+            isDivider: false 
+          });
+        });
+        await batch.commit();
+      } catch (err) {
+        console.error("Seeding error:", err);
+      }
+    }
+
+    function saveToLocalStorage() {
+      localStorage.setItem('scooptrack_local_flavors', JSON.stringify(window.flavors));
+    }
+
+    function updateSyncStatus(isLive, label) {
+      const el = document.getElementById('syncStatus');
+      if (!el) return;
+      el.innerHTML = isLive 
+        ? `<i class="fa-solid fa-cloud text-iosGreen mr-1"></i> ${label}` 
+        : `<i class="fa-solid fa-circle-notch fa-spin text-iosBlue mr-1"></i> ${label}`;
+    }
+
+    // Render Compact Full-Width List View & Init SortableJS with drag handle restriction
+    window.renderFlavors = function() {
+      const grid = document.getElementById('flavorGrid');
+      const emptyState = document.getElementById('emptyState');
+      const searchVal = (document.getElementById('searchInput')?.value || '').toLowerCase();
+
+      window.flavors.forEach((item, idx) => {
+        if (item.order === undefined) item.order = idx;
+      });
+
+      let filtered = window.flavors.filter(item => {
+        if (item.isDivider) return true; 
+        return item.name.toLowerCase().includes(searchVal);
+      });
+
+      const nonDividers = window.flavors.filter(f => !f.isDivider);
+      const totalStock = nonDividers.reduce((acc, curr) => acc + (Number(curr.stock) || 0), 0);
+
+      document.getElementById('statTotalStock').innerText = totalStock;
+      document.getElementById('statTotalFlavors').innerText = nonDividers.length;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      } else {
+        emptyState.classList.add('hidden');
+      }
+
+      const isFilterActive = searchVal !== '';
+
+      grid.innerHTML = filtered.map((item) => {
+        if (item.isDivider) {
+          return `
+            <div data-id="${item.id}" class="draggable-row my-1 px-2.5 py-1.5 flex items-center justify-between w-full bg-slate-200/50 rounded-xl border border-slate-300/40 shadow-inner">
+              <div class="flex items-center space-x-2.5 flex-1 min-w-0">
+                <!-- Drag Handle (Restricted dragging zone) -->
+                <div class="drag-handle text-slate-400 shrink-0 cursor-grab active:cursor-grabbing p-1">
+                  <i class="fa-solid fa-grip-vertical text-xs"></i>
+                </div>
+                <div class="flex-grow h-[2px] bg-slate-300 rounded-full mx-2"></div>
+              </div>
+              <button onclick="deleteDivider('${item.id}')" class="btn-press w-5 h-5 rounded-full bg-slate-300/70 text-slate-500 hover:text-rose-600 flex items-center justify-center shrink-0 ml-2" title="Remove Divider">
+                <i class="fa-solid fa-xmark text-[9px]"></i>
+              </button>
+            </div>
+          `;
+        }
+
+        const rowBorder = 'border-white/85';
+
+        return `
+          <div data-id="${item.id}" class="draggable-row glass-card rounded-2xl px-3 py-2 shadow-sm border ${rowBorder} flex items-center justify-between space-x-2 w-full">
+            <div class="flex items-center space-x-2.5 min-w-0 flex-1">
+              <!-- Drag Handle (Restricted dragging zone) -->
+              <div class="drag-handle text-slate-300 hover:text-slate-400 shrink-0 cursor-grab active:cursor-grabbing p-1">
+                <i class="fa-solid fa-grip-vertical text-xs"></i>
+              </div>
+              <span class="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full shrink-0 shadow-inner border border-black/10" style="background-color: ${item.color || '#e2e8f0'};"></span>
+              <div class="flex flex-wrap items-center gap-1 min-w-0 pr-1">
+                <h2 class="font-bold text-xs sm:text-sm text-slate-800 leading-snug break-words" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</h2>
+              </div>
+            </div>
+
+            <div class="flex items-center space-x-1.5 shrink-0">
+              <div class="text-right px-1 min-w-[36px] sm:min-w-[42px]">
+                <span class="text-sm sm:text-base font-black text-slate-900 leading-none">${item.stock}</span>
+                <span class="text-[8px] sm:text-[9px] font-semibold text-slate-400 block leading-tight">tubs</span>
+              </div>
+
+              <div class="flex items-center space-x-1">
+                <button onclick="adjustStock('${item.id}', -1)" class="btn-press w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-black text-sm sm:text-base flex items-center justify-center border border-slate-200/50 leading-none pb-0.5">
+                  -
+                </button>
+                <button onclick="adjustStock('${item.id}', 1)" class="btn-press w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-iosBlue/10 hover:bg-iosBlue/20 text-iosBlue font-black text-sm sm:text-base flex items-center justify-center border border-iosBlue/20 leading-none pb-0.5">
+                  +
+                </button>
+              </div>
+
+              <button onclick="openEditModal('${item.id}')" class="btn-press w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-slate-100 text-slate-400 hover:text-slate-700 flex items-center justify-center shrink-0 ml-0.5">
+                <i class="fa-solid fa-pen text-[9px] sm:text-[10px]"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Initialize SortableJS with handle restriction so regular scrolling works anywhere else on the row
+      if (!isFilterActive) {
+        if (sortableInstance) sortableInstance.destroy();
+        sortableInstance = new Sortable(grid, {
+          animation: 150,
+          handle: '.drag-handle', // Dragging only triggers when grabbing the grip handle icon
+          touchStartThreshold: 5,
+          onEnd: async function(evt) {
+            const movedItem = window.flavors.splice(evt.oldIndex, 1)[0];
+            window.flavors.splice(evt.newIndex, 0, movedItem);
+
+            window.flavors.forEach((item, idx) => {
+              item.order = idx;
+            });
+
+            saveToLocalStorage();
+            renderFlavors();
+            await persistNewOrder();
+          }
+        });
+      }
+    };
+
+    // Add Divider
+    window.addDivider = async function() {
+      const newId = 'div_' + Date.now();
+      const newOrder = window.flavors.length;
+      const newDivider = { id: newId, isDivider: true, order: newOrder };
+
+      window.flavors.push(newDivider);
+      saveToLocalStorage();
+      renderFlavors();
+
+      if (db) {
+        try {
+          const docRef = doc(db, 'icecream_flavors', newId);
+          await setDoc(docRef, { isDivider: true, order: newOrder });
+        } catch (err) {
+          console.error("Divider cloud sync error:", err);
+        }
+      }
+    };
+
+    // Delete Divider
+    window.deleteDivider = async function(id) {
+      window.flavors = window.flavors.filter(f => f.id !== id);
+      window.flavors.forEach((f, idx) => f.order = idx);
+      saveToLocalStorage();
+      renderFlavors();
+      if (db) {
+        try {
+          const docRef = doc(db, 'icecream_flavors', id);
+          await deleteDoc(docRef);
+          await persistNewOrder();
+        } catch (err) {
+          console.error("Divider cloud delete error:", err);
+        }
+      }
+    };
+
+    async function persistNewOrder() {
+      if (!db) return;
+      try {
+        const batch = writeBatch(db);
+        window.flavors.forEach((item, idx) => {
+          const docRef = doc(db, 'icecream_flavors', item.id);
+          if (item.isDivider) {
+            batch.update(docRef, { order: idx, isDivider: true });
+          } else {
+            batch.update(docRef, { order: idx, name: item.name, color: item.color, stock: item.stock, isDivider: false });
+          }
+        });
+        await batch.commit();
+      } catch (err) {
+        console.error("Order sync error:", err);
+      }
+    }
+
+    // Quick Stock Adjustment (+/-)
+    window.adjustStock = async function(id, delta) {
+      const item = window.flavors.find(f => f.id === id);
+      if (!item) return;
+
+      const newStock = Math.max(0, (Number(item.stock) || 0) + delta);
+      item.stock = newStock;
+      saveToLocalStorage();
+      renderFlavors();
+
+      if (db) {
+        try {
+          const docRef = doc(db, 'icecream_flavors', id);
+          await updateDoc(docRef, { stock: newStock });
+        } catch (err) {
+          console.error("Stock sync error:", err);
+        }
+      }
+    };
+
+    // Edit Flavor Modal
+    window.openEditModal = function(id) {
+      const item = window.flavors.find(f => f.id === id);
+      if (!item) return;
+
+      document.getElementById('editFlavorId').value = item.id;
+      document.getElementById('editFlavorName').value = item.name;
+      document.getElementById('editFlavorColor').value = item.color || '#3b82f6';
+      document.getElementById('hexCodeDisplay').innerText = item.color || '#3b82f6';
+      document.getElementById('editFlavorStock').value = item.stock;
+
+      const presetContainer = document.getElementById('colorPresets');
+      presetContainer.innerHTML = COLOR_PRESETS.map(c => `
+        <button type="button" onclick="selectPresetColor('${c}')" class="w-5 h-5 rounded-full border border-black/10 shadow-sm transition transform hover:scale-110" style="background-color: ${c};"></button>
+      `).join('');
+
+      document.getElementById('editModal').classList.remove('hidden');
+    };
+
+    window.selectPresetColor = function(color) {
+      document.getElementById('editFlavorColor').value = color;
+      document.getElementById('hexCodeDisplay').innerText = color;
+    };
+
+    window.closeEditModal = function() {
+      document.getElementById('editModal').classList.add('hidden');
+    };
+
+    window.saveFlavorEdit = async function() {
+      const id = document.getElementById('editFlavorId').value;
+      const name = document.getElementById('editFlavorName').value.trim();
+      const color = document.getElementById('editFlavorColor').value;
+      const stock = parseInt(document.getElementById('editFlavorStock').value, 10) || 0;
+
+      if (!name) return;
+
+      const item = window.flavors.find(f => f.id === id);
+      if (item) {
+        item.name = name;
+        item.color = color;
+        item.stock = stock;
+        saveToLocalStorage();
+        renderFlavors();
+      }
+
+      closeEditModal();
+
+      if (db) {
+        try {
+          const docRef = doc(db, 'icecream_flavors', id);
+          await updateDoc(docRef, { name, color, stock });
+        } catch (err) {
+          console.error("Edit sync error:", err);
+        }
+      }
+    };
+
+    window.deleteCurrentFlavor = function() {
+      const id = document.getElementById('editFlavorId').value;
+      const item = window.flavors.find(f => f.id === id);
+      if (!item) return;
+
+      closeEditModal();
+      openConfirmModal(
+        "Delete Flavor",
+        `Are you sure you want to delete "${item.name}"?`,
+        async () => {
+          window.flavors = window.flavors.filter(f => f.id !== id);
+          window.flavors.forEach((f, idx) => f.order = idx);
+          saveToLocalStorage();
+          renderFlavors();
+          if (db) {
+            try {
+              const docRef = doc(db, 'icecream_flavors', id);
+              await deleteDoc(docRef);
+              await persistNewOrder();
+            } catch (err) {
+              console.error("Delete sync error:", err);
+            }
+          }
+        }
+      );
+    };
+
+    // Add Flavor Modal
+    window.openAddFlavorModal = function() {
+      document.getElementById('addFlavorName').value = '';
+      document.getElementById('addFlavorColor').value = '#EC4899';
+      document.getElementById('addFlavorStock').value = '10';
+      document.getElementById('addModal').classList.remove('hidden');
+    };
+
+    window.closeAddModal = function() {
+      document.getElementById('addModal').classList.add('hidden');
+    };
+
+    window.saveNewFlavor = async function() {
+      const name = document.getElementById('addFlavorName').value.trim();
+      const color = document.getElementById('addFlavorColor').value;
+      const stock = parseInt(document.getElementById('addFlavorStock').value, 10) || 0;
+
+      if (!name) return;
+
+      const newId = 'f_' + Date.now();
+      const newOrder = window.flavors.length;
+      const newFlavor = { id: newId, name, color, stock, order: newOrder, isDivider: false };
+
+      window.flavors.push(newFlavor);
+      saveToLocalStorage();
+      renderFlavors();
+      closeAddModal();
+
+      if (db) {
+        try {
+          const docRef = doc(db, 'icecream_flavors', newId);
+          await setDoc(docRef, { name, color, stock, order: newOrder, isDivider: false });
+        } catch (err) {
+          console.error("Add sync error:", err);
+        }
+      }
+    };
+
+    // Global Batch Actions
+    window.promptRestockAll = function() {
+      openConfirmModal(
+        "Restock All Flavors",
+        "Set stock count for all flavors to 10 tubs?",
+        async () => {
+          window.flavors.forEach(f => {
+            if (!f.isDivider) f.stock = 10;
+          });
+          saveToLocalStorage();
+          renderFlavors();
+          if (db) {
+            const batch = writeBatch(db);
+            window.flavors.forEach(f => {
+              if (!f.isDivider) {
+                const docRef = doc(db, 'icecream_flavors', f.id);
+                batch.update(docRef, { stock: 10 });
+              }
+            });
+            await batch.commit();
+          }
+        }
+      );
+    };
+
+    window.resetToDefaultsPrompt = function() {
+      openConfirmModal(
+        "Reset to Default Order",
+        "This will restore the original 30 default flavors and remove custom dividers. Continue?",
+        async () => {
+          window.flavors = JSON.parse(JSON.stringify(DEFAULT_30_FLAVORS));
+          saveToLocalStorage();
+          renderFlavors();
+          if (db) {
+            await seedDefaultFlavors();
+          }
+        }
+      );
+    };
+
+    function openConfirmModal(title, message, onConfirm) {
+      document.getElementById('confirmTitle').innerText = title;
+      document.getElementById('confirmMessage').innerText = message;
+      pendingConfirmAction = onConfirm;
+      document.getElementById('confirmModal').classList.add('hidden'); // fix hide typo just in case
+      document.getElementById('confirmModal').classList.remove('hidden');
+    }
+
+    let pendingConfirmAction = null;
+    window.closeConfirmModal = function(isConfirmed) {
+      document.getElementById('confirmModal').classList.add('hidden');
+      if (isConfirmed && typeof pendingConfirmAction === 'function') {
+        pendingConfirmAction();
+      }
+      pendingConfirmAction = null;
+    };
+
+    document.getElementById('confirmActionBtn').addEventListener('click', () => {
+      closeConfirmModal(true);
+    });
+
+    window.openPwaModal = function() {
+      document.getElementById('pwaModal').classList.remove('hidden');
+    };
+
+    window.closePwaModal = function() {
+      document.getElementById('pwaModal').classList.add('hidden');
+    };
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    document.getElementById('editFlavorColor').addEventListener('input', (e) => {
+      document.getElementById('hexCodeDisplay').innerText = e.target.value.toUpperCase();
+    });
+  </script>
+</body>
+</html>
