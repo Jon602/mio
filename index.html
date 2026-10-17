@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>ScoopTrack - Ice Cream Stock Tracker</title>
+  <title>miogelato - Ice Cream Stock Tracker</title>
 
   <!-- iOS PWA Capabilities -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="ScoopTrack">
+  <meta name="apple-mobile-web-app-title" content="miogelato">
   <link rel="apple-touch-icon" href="./mio-circle.png">
 
   <!-- Font Awesome Icons -->
@@ -326,7 +326,7 @@
       <div style="display: flex; align-items: center; gap: 10px;">
         <img src="./mio-circle.png" alt="Logo" style="width: 36px; height: 36px; border-radius: 12px; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.15);" onError="this.onerror=null;this.src='https://img.icons8.com/3d-fluency/180/ice-cream-cone.png';">
         <div>
-          <h1 style="font-size: 16px; font-weight: 800; line-height: 1.1;">ScoopTrack</h1>
+          <h1 style="font-size: 16px; font-weight: 800; line-height: 1.1;">miogelato</h1>
           <p id="syncStatus" style="font-size: 11px; color: #8e8e93; font-weight: 500;">
             <i class="fa-solid fa-circle-notch fa-spin" style="color: #007AFF;"></i> Loading app...
           </p>
@@ -422,7 +422,7 @@
   <!-- PWA MODAL -->
   <div id="pwaModal" class="modal-overlay hidden" style="align-items: flex-end;">
     <div class="modal-card" style="border-radius: 24px 24px 0 0;">
-      <h3 class="modal-title">Install ScoopTrack</h3>
+      <h3 class="modal-title">Install miogelato</h3>
       <p style="font-size: 12px; color: #636366; margin-bottom: 12px;">Tap the Share button <i class="fa-solid fa-share-from-square" style="color:#007AFF;"></i> in Safari, then select <strong>'Add to Home Screen'</strong>.</p>
       <button onclick="closePwaModal()" class="btn-main" style="width:100%;">Got it!</button>
     </div>
@@ -467,7 +467,7 @@
       { id: 'f30', name: 'Dulce de Leche', stock: 11, order: 29, isDivider: false }
     ];
 
-    let savedLocal = localStorage.getItem('scooptrack_local_flavors');
+    let savedLocal = localStorage.getItem('miogelato_local_flavors');
     window.flavors = savedLocal ? JSON.parse(savedLocal) : JSON.parse(JSON.stringify(DEFAULT_30_FLAVORS));
     
     let db = null;
@@ -557,7 +557,7 @@
     }
 
     function saveToLocalStorage() {
-      localStorage.setItem('scooptrack_local_flavors', JSON.stringify(window.flavors));
+      localStorage.setItem('miogelato_local_flavors', JSON.stringify(window.flavors));
     }
 
     function updateSyncStatus(isLive, label) {
