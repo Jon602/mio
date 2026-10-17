@@ -203,18 +203,7 @@
         </div>
 
         <div>
-          <label class="block font-semibold text-slate-500 uppercase mb-1">Color Badge</label>
-          <div class="flex items-center space-x-3 mb-2">
-            <input type="color" id="editFlavorColor" class="w-9 h-9 rounded-xl border-0 cursor-pointer p-0 bg-transparent">
-            <span id="hexCodeDisplay" class="font-mono text-slate-500">#000000</span>
-          </div>
-
-          <div class="font-medium text-slate-400 mb-1">Presets:</div>
-          <div class="flex flex-wrap gap-1.5" id="colorPresets"></div>
-        </div>
-
-        <div>
-          <label class="block font-semibold text-slate-500 uppercase mb-1">Stock Tubs Count</label>
+          <label class="block font-semibold text-slate-500 uppercase mb-1">Stock Count</label>
           <input type="number" id="editFlavorStock" min="0" class="w-full px-3 py-2 rounded-xl border border-slate-200 font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-iosBlue">
         </div>
       </div>
@@ -249,14 +238,6 @@
         <div>
           <label class="block font-semibold text-slate-500 uppercase mb-1">Flavor Name</label>
           <input type="text" id="addFlavorName" placeholder="e.g. Salted Caramel Crunch" class="w-full px-3 py-2 rounded-xl border border-slate-200 font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-iosBlue">
-        </div>
-
-        <div>
-          <label class="block font-semibold text-slate-500 uppercase mb-1">Badge Color</label>
-          <div class="flex items-center space-x-3">
-            <input type="color" id="addFlavorColor" value="#EC4899" class="w-9 h-9 rounded-xl border-0 cursor-pointer p-0">
-            <span class="text-slate-500 font-medium">Pick color</span>
-          </div>
         </div>
 
         <div>
@@ -300,7 +281,7 @@
           <p>Tap the <strong class="text-slate-900">Share button</strong> <i class="fa-solid fa-share-from-square text-iosBlue"></i> in Safari.</p>
         </div>
         <div class="flex items-start space-x-2.5 bg-slate-50 p-2.5 rounded-xl">
-          <span class="w-5 h-5 rounded-full bg-iosBlue text-white flex items-center justify-center font-bold text-[10px] shrink-0">2</span>
+          <span class="w-5 h-5 rounded-full bg-iosBlue text-white flex items-center justify-center text-[10px] shrink-0">2</span>
           <p>Select <strong class="text-slate-900">'Add to Home Screen'</strong> <i class="fa-regular fa-square-plus text-slate-800"></i>.</p>
         </div>
         <div class="flex items-start space-x-2.5 bg-slate-50 p-2.5 rounded-xl">
@@ -376,12 +357,6 @@
     let db = null;
     let auth = null;
     let sortableInstance = null;
-
-    const COLOR_PRESETS = [
-      '#FFF3BF', '#FFE8CC', '#FFD8A8', '#FFC9C9', '#FCC2D7', 
-      '#EEBFA8', '#D0EBFF', '#B1F2D9', '#C0EB75', '#E5DBFF',
-      '#4DABF7', '#38D9A9', '#FF922B', '#FF6B6B', '#A61E4C'
-    ];
 
     window.addEventListener('load', () => {
       initApp();
@@ -529,22 +504,20 @@
         const rowBorder = 'border-white/85';
 
         return `
-          <div data-id="${item.id}" class="draggable-row glass-card rounded-2xl px-3 py-2 shadow-sm border ${rowBorder} flex items-center justify-between space-x-2 w-full">
+          <div data-id="${item.id}" class="draggable-row glass-card rounded-2xl px-3 py-2.5 shadow-sm border ${rowBorder} flex items-center justify-between space-x-2 w-full">
             <div class="flex items-center space-x-2.5 min-w-0 flex-1">
               <!-- Drag Handle (Restricted dragging zone) -->
               <div class="drag-handle text-slate-300 hover:text-slate-400 shrink-0 cursor-grab active:cursor-grabbing p-1">
                 <i class="fa-solid fa-grip-vertical text-xs"></i>
               </div>
-              <span class="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full shrink-0 shadow-inner border border-black/10" style="background-color: ${item.color || '#e2e8f0'};"></span>
               <div class="flex flex-wrap items-center gap-1 min-w-0 pr-1">
-                <h2 class="font-bold text-xs sm:text-sm text-slate-800 leading-snug break-words" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</h2>
+                <h2 class="font-bold text-sm sm:text-base text-slate-800 leading-snug break-words" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</h2>
               </div>
             </div>
 
             <div class="flex items-center space-x-1.5 shrink-0">
-              <div class="text-right px-1 min-w-[36px] sm:min-w-[42px]">
-                <span class="text-sm sm:text-base font-black text-slate-900 leading-none">${item.stock}</span>
-                <span class="text-[8px] sm:text-[9px] font-semibold text-slate-400 block leading-tight">tubs</span>
+              <div class="text-right px-1 min-w-[32px] sm:min-w-[40px]">
+                <span class="text-base sm:text-lg font-black text-slate-900 leading-none">${item.stock}</span>
               </div>
 
               <div class="flex items-center space-x-1">
@@ -669,21 +642,9 @@
 
       document.getElementById('editFlavorId').value = item.id;
       document.getElementById('editFlavorName').value = item.name;
-      document.getElementById('editFlavorColor').value = item.color || '#3b82f6';
-      document.getElementById('hexCodeDisplay').innerText = item.color || '#3b82f6';
       document.getElementById('editFlavorStock').value = item.stock;
 
-      const presetContainer = document.getElementById('colorPresets');
-      presetContainer.innerHTML = COLOR_PRESETS.map(c => `
-        <button type="button" onclick="selectPresetColor('${c}')" class="w-5 h-5 rounded-full border border-black/10 shadow-sm transition transform hover:scale-110" style="background-color: ${c};"></button>
-      `).join('');
-
       document.getElementById('editModal').classList.remove('hidden');
-    };
-
-    window.selectPresetColor = function(color) {
-      document.getElementById('editFlavorColor').value = color;
-      document.getElementById('hexCodeDisplay').innerText = color;
     };
 
     window.closeEditModal = function() {
@@ -693,7 +654,6 @@
     window.saveFlavorEdit = async function() {
       const id = document.getElementById('editFlavorId').value;
       const name = document.getElementById('editFlavorName').value.trim();
-      const color = document.getElementById('editFlavorColor').value;
       const stock = parseInt(document.getElementById('editFlavorStock').value, 10) || 0;
 
       if (!name) return;
@@ -701,7 +661,6 @@
       const item = window.flavors.find(f => f.id === id);
       if (item) {
         item.name = name;
-        item.color = color;
         item.stock = stock;
         saveToLocalStorage();
         renderFlavors();
@@ -712,7 +671,7 @@
       if (db) {
         try {
           const docRef = doc(db, 'icecream_flavors', id);
-          await updateDoc(docRef, { name, color, stock });
+          await updateDoc(docRef, { name, stock });
         } catch (err) {
           console.error("Edit sync error:", err);
         }
@@ -749,7 +708,6 @@
     // Add Flavor Modal
     window.openAddFlavorModal = function() {
       document.getElementById('addFlavorName').value = '';
-      document.getElementById('addFlavorColor').value = '#EC4899';
       document.getElementById('addFlavorStock').value = '10';
       document.getElementById('addModal').classList.remove('hidden');
     };
@@ -760,14 +718,13 @@
 
     window.saveNewFlavor = async function() {
       const name = document.getElementById('addFlavorName').value.trim();
-      const color = document.getElementById('addFlavorColor').value;
       const stock = parseInt(document.getElementById('addFlavorStock').value, 10) || 0;
 
       if (!name) return;
 
       const newId = 'f_' + Date.now();
       const newOrder = window.flavors.length;
-      const newFlavor = { id: newId, name, color, stock, order: newOrder, isDivider: false };
+      const newFlavor = { id: newId, name, color: '#EC4899', stock, order: newOrder, isDivider: false };
 
       window.flavors.push(newFlavor);
       saveToLocalStorage();
@@ -777,7 +734,7 @@
       if (db) {
         try {
           const docRef = doc(db, 'icecream_flavors', newId);
-          await setDoc(docRef, { name, color, stock, order: newOrder, isDivider: false });
+          await setDoc(docRef, { name, color: '#EC4899', stock, order: newOrder, isDivider: false });
         } catch (err) {
           console.error("Add sync error:", err);
         }
@@ -788,7 +745,7 @@
     window.promptRestockAll = function() {
       openConfirmModal(
         "Restock All Flavors",
-        "Set stock count for all flavors to 10 tubs?",
+        "Set stock count for all flavors to 10?",
         async () => {
           window.flavors.forEach(f => {
             if (!f.isDivider) f.stock = 10;
@@ -856,10 +813,6 @@
     function escapeHtml(str) {
       return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
-
-    document.getElementById('editFlavorColor').addEventListener('input', (e) => {
-      document.getElementById('hexCodeDisplay').innerText = e.target.value.toUpperCase();
-    });
   </script>
 </body>
 </html>
