@@ -44,7 +44,7 @@
       backdrop-filter: blur(25px);
       -webkit-backdrop-filter: blur(25px);
       border-bottom: 0.5px solid rgba(0, 0, 0, 0.12);
-      padding: 12px 16px;
+      padding: 10px 16px;
     }
 
     .nav-container {
@@ -59,7 +59,7 @@
       max-width: 800px;
       width: 100%;
       margin: 0 auto;
-      padding: 12px 16px;
+      padding: 10px 16px;
       flex-grow: 1;
     }
 
@@ -68,16 +68,16 @@
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.6);
-      border-radius: 16px;
-      padding: 12px;
+      border-radius: 14px;
+      padding: 10px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     }
 
     .stats-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 12px;
+      gap: 8px;
+      margin-bottom: 10px;
     }
 
     .stat-box {
@@ -93,16 +93,16 @@
     }
 
     .stat-value {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 900;
       color: #1c1c1e;
-      margin-top: 2px;
+      margin-top: 1px;
     }
 
     #flavorGrid {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
     }
 
     .draggable-row {
@@ -110,17 +110,18 @@
       align-items: center;
       justify-content: space-between;
       background: rgba(255, 255, 255, 0.90);
-      border-radius: 16px;
-      padding: 10px 14px;
+      border-radius: 12px;
+      padding: 6px 12px;
       border: 1px solid rgba(255, 255, 255, 0.8);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
     }
 
     .drag-handle {
       color: #aeaeb2;
       cursor: grab;
       padding: 4px;
-      margin-right: 8px;
+      margin-right: 6px;
+      font-size: 13px;
     }
     .drag-handle:active {
       cursor: grabbing;
@@ -128,7 +129,7 @@
 
     .flavor-name {
       font-weight: 700;
-      font-size: 15px;
+      font-size: 14px;
       color: #1c1c1e;
       word-break: break-word;
     }
@@ -141,12 +142,12 @@
     }
 
     .btn-count {
-      width: 32px;
-      height: 32px;
-      border-radius: 10px;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
       border: 1px solid rgba(0,0,0,0.1);
       font-weight: 900;
-      font-size: 16px;
+      font-size: 15px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -170,7 +171,7 @@
     }
 
     .stock-num {
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 900;
     }
 
@@ -186,15 +187,15 @@
     .header-btns {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
     .action-btn {
-      padding: 6px 12px;
-      border-radius: 20px;
+      padding: 5px 10px;
+      border-radius: 16px;
       background: rgba(255,255,255,0.8);
       border: 1px solid #d1d1d6;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
       color: #3a3a3c;
       display: flex;
@@ -203,8 +204,8 @@
     }
 
     .add-flavor-btn {
-      width: 32px;
-      height: 32px;
+      width: 30px;
+      height: 30px;
       border-radius: 50%;
       background: #007AFF;
       color: white;
@@ -212,7 +213,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
+      font-size: 11px;
     }
 
     /* Divider Row Styling */
@@ -220,8 +221,8 @@
       display: flex;
       align-items: center;
       width: 100%;
-      padding: 10px 0;
-      gap: 8px;
+      padding: 3px 12px;
+      gap: 6px;
       cursor: pointer;
     }
     .divider-line {
@@ -231,12 +232,12 @@
       border-radius: 2px;
     }
     .divider-text {
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 800;
       color: #1c1c1e;
       text-transform: uppercase;
       letter-spacing: 0.8px;
-      padding: 0 8px;
+      padding: 0 6px;
       white-space: nowrap;
     }
 
@@ -324,11 +325,11 @@
   <!-- Header -->
   <header>
     <div class="nav-container">
-      <div style="display: flex; align-items: center; gap: 10px;">
-        <img src="./mio-circle.png" alt="Logo" style="width: 36px; height: 36px; border-radius: 12px; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.15);" onError="this.onerror=null;this.src='https://img.icons8.com/3d-fluency/180/ice-cream-cone.png';">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <img src="./mio-circle.png" alt="Logo" width="32" height="32" style="width: 32px; height: 32px; border-radius: 10px; object-fit: cover; box-shadow: 0 3px 8px rgba(0,0,0,0.15);" onError="this.onerror=null;this.src='https://img.icons8.com/3d-fluency/180/ice-cream-cone.png';">
         <div>
-          <h1 style="font-size: 16px; font-weight: 800; line-height: 1.1;">miogelato</h1>
-          <p id="syncStatus" style="font-size: 11px; color: #8e8e93; font-weight: 500;">
+          <h1 style="font-size: 15px; font-weight: 800; line-height: 1.1;">miogelato</h1>
+          <p id="syncStatus" style="font-size: 10px; color: #8e8e93; font-weight: 500;">
             <i class="fa-solid fa-circle-notch fa-spin" style="color: #007AFF;"></i> Loading app...
           </p>
         </div>
@@ -600,23 +601,23 @@
         if (item.isDivider) {
           return `
             <div data-id="${item.id}" class="divider-row" data-divider-id="${item.id}">
-              <div class="drag-handle"><i class="fa-solid fa-grip-vertical" style="font-size: 11px;"></i></div>
+              <div class="drag-handle"><i class="fa-solid fa-grip-vertical"></i></div>
               <div class="divider-line"></div>
               ${item.name ? `<span class="divider-text">${escapeHtml(item.name)}</span><div class="divider-line"></div>` : ''}
-              <button onclick="event.stopPropagation(); deleteDivider('${item.id}')" style="border:none; background:#e5e5ea; width:22px; height:22px; border-radius:50%; cursor:pointer; color:#3a3a3c; display:flex; align-items:center; justify-content:center;" title="Remove Divider"><i class="fa-solid fa-xmark" style="font-size:10px;"></i></button>
+              <button onclick="event.stopPropagation(); deleteDivider('${item.id}')" style="border:none; background:#e5e5ea; width:18px; height:18px; border-radius:50%; cursor:pointer; color:#3a3a3c; display:flex; align-items:center; justify-content:center;" title="Remove Divider"><i class="fa-solid fa-xmark" style="font-size:8px;"></i></button>
             </div>
           `;
         }
 
         return `
           <div data-id="${item.id}" class="draggable-row" data-flavor-id="${item.id}">
-            <div style="display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0;">
+            <div style="display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0;">
               <div class="drag-handle"><i class="fa-solid fa-grip-vertical"></i></div>
               <h2 class="flavor-name" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</h2>
             </div>
 
             <div class="controls">
-              <div style="display: flex; gap: 4px;">
+              <div style="display: flex; gap: 3px;">
                 <button onclick="adjustStock('${item.id}', -1)" class="btn-press btn-count">-</button>
                 <button onclick="adjustStock('${item.id}', 1)" class="btn-press btn-count plus">+</button>
               </div>
@@ -688,7 +689,7 @@
       const item = window.flavors.find(f => f.id === id);
       if (!item) return;
       const newLabel = prompt('Edit divider label:', item.name);
-      if (newLabel === null) return; // Cancelled
+      if (newLabel === null) return;
 
       item.name = newLabel.trim();
       saveToLocalStorage();
