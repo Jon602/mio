@@ -116,12 +116,17 @@
       box-shadow: 0 1px 2px rgba(0,0,0,0.04);
     }
 
+    /* Grab Handle Visibility Control */
     .drag-handle {
       color: #aeaeb2;
       cursor: grab;
       padding: 4px;
       margin-right: 6px;
       font-size: 13px;
+      display: none; /* Hidden by default */
+    }
+    .rearranging .drag-handle {
+      display: inline-block; /* Shown when rearranging mode is active */
     }
     .drag-handle:active {
       cursor: grabbing;
@@ -137,7 +142,7 @@
     .controls {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 4px;
       flex-shrink: 0;
     }
 
@@ -201,6 +206,11 @@
       display: flex;
       align-items: center;
       gap: 4px;
+    }
+    .action-btn.active {
+      background: rgba(0, 122, 255, 0.15);
+      border-color: #007AFF;
+      color: #007AFF;
     }
 
     .add-flavor-btn {
@@ -336,9 +346,9 @@
       </div>
 
       <div class="header-btns">
-        <button onclick="openPwaModal()" class="btn-press action-btn">
-          <i class="fa-solid fa-square-plus" style="color: #007AFF;"></i>
-          <span style="display: none;">Install</span>
+        <button id="rearrangeBtn" onclick="toggleRearrange()" class="btn-press action-btn" title="Toggle Rearrange Mode">
+          <i class="fa-solid fa-bars" style="color: #007AFF;"></i>
+          <span>Rearrange</span>
         </button>
         <button onclick="addDivider()" class="btn-press action-btn" title="Add Divider">
           <i class="fa-solid fa-grip-lines" style="color: #8e8e93;"></i>
@@ -475,6 +485,7 @@
     let db = null;
     let auth = null;
     let sortableInstance = null;
+    let isRearranging = false;
 
     window.addEventListener('DOMContentLoaded', () => {
       renderFlavors();
@@ -483,6 +494,20 @@
     window.addEventListener('load', () => {
       initApp();
     });
+
+    window.toggleRearrange = function() {
+      isRearranging = !isRearranging;
+      const btn = document.getElementById('rearrangeBtn');
+      const grid = document.getElementById('flavorGrid');
+      
+      if (isRearranging) {
+        btn.classList.add('active');
+        grid.classList.add('rearranging');
+      } else {
+        btn.classList.remove('active');
+        grid.classList.remove('rearranging');
+      }
+    };
 
     async function initApp() {
       renderFlavors();
@@ -575,6 +600,13 @@
       const emptyState = document.getElementById('emptyState');
 
       if (!grid) return;
+
+      // Preserve rearrangement visual class state on render
+      if (isRearranging) {
+        grid.classList.add('rearranging');
+      } else {
+        grid.classList.remove('rearranging');
+      }
 
       window.flavors.forEach((item, idx) => {
         if (item.order === undefined) item.order = idx;
