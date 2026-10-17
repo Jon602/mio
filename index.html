@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="ScoopTrack">
-  <link rel="apple-touch-icon" href="https://img.icons8.com/3d-fluency/180/ice-cream-cone.png">
+  <link rel="apple-touch-icon" href="mio circle.jpg">
 
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -136,7 +136,8 @@
     .controls {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 4px;
+      flex-shrink: 0;
     }
 
     .btn-count {
@@ -159,11 +160,18 @@
       border-color: rgba(0, 122, 255, 0.2);
     }
 
+    .stock-box {
+      min-width: 24px;
+      text-align: right;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      margin-left: 2px;
+    }
+
     .stock-num {
       font-size: 18px;
       font-weight: 900;
-      min-width: 36px;
-      text-align: right;
     }
 
     .btn-press {
@@ -205,6 +213,30 @@
       align-items: center;
       justify-content: center;
       font-size: 12px;
+    }
+
+    /* Divider Row Styling */
+    .divider-row {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      padding: 10px 0;
+      gap: 8px;
+    }
+    .divider-line {
+      flex-grow: 1;
+      height: 2px;
+      background-color: #1c1c1e;
+      border-radius: 2px;
+    }
+    .divider-text {
+      font-size: 11px;
+      font-weight: 800;
+      color: #1c1c1e;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 0 8px;
+      white-space: nowrap;
     }
 
     /* Modals */
@@ -281,6 +313,9 @@
       font-size: 13px;
       cursor: pointer;
     }
+    .hidden {
+      display: none !important;
+    }
   </style>
 </head>
 <body>
@@ -289,9 +324,7 @@
   <header>
     <div class="nav-container">
       <div style="display: flex; align-items: center; gap: 10px;">
-        <div style="width: 36px; height: 36px; border-radius: 12px; background: linear-gradient(135deg, #ec4899, #f43f5e); display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 4px 10px rgba(236,72,153,0.3);">
-          <i class="fa-solid fa-ice-cream"></i>
-        </div>
+        <img src="mio circle.jpg" alt="Logo" style="width: 36px; height: 36px; border-radius: 12px; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">
         <div>
           <h1 style="font-size: 16px; font-weight: 800; line-height: 1.1;">ScoopTrack</h1>
           <p id="syncStatus" style="font-size: 11px; color: #8e8e93; font-weight: 500;">
@@ -303,7 +336,7 @@
       <div class="header-btns">
         <button onclick="openPwaModal()" class="btn-press action-btn">
           <i class="fa-solid fa-square-plus" style="color: #007AFF;"></i>
-          <span style="display: none; @media(min-width: 640px){display:inline;}">Install</span>
+          <span style="display: none;">Install</span>
         </button>
         <button onclick="addDivider()" class="btn-press action-btn" title="Add Divider">
           <i class="fa-solid fa-grip-lines" style="color: #8e8e93;"></i>
@@ -390,7 +423,7 @@
   <div id="pwaModal" class="modal-overlay hidden" style="align-items: flex-end;">
     <div class="modal-card" style="border-radius: 24px 24px 0 0;">
       <h3 class="modal-title">Install ScoopTrack</h3>
-      <p style="font-size: 12px; color: #636366; margin-bottom: 12px;">Tap the Share button <i class="fa-solid fa-share-from-square text-[#007AFF]"></i> in Safari, then select <strong>'Add to Home Screen'</strong>.</p>
+      <p style="font-size: 12px; color: #636366; margin-bottom: 12px;">Tap the Share button <i class="fa-solid fa-share-from-square" style="color:#007AFF;"></i> in Safari, then select <strong>'Add to Home Screen'</strong>.</p>
       <button onclick="closePwaModal()" class="btn-main" style="width:100%;">Got it!</button>
     </div>
   </div>
@@ -411,7 +444,27 @@
       { id: 'f7', name: 'Mango Sorbet', stock: 3, order: 6, isDivider: false },
       { id: 'f8', name: 'Pistachio', stock: 7, order: 7, isDivider: false },
       { id: 'f9', name: 'Bubblegum', stock: 2, order: 8, isDivider: false },
-      { id: 'f10', name: 'Rum & Raisin', stock: 9, order: 9, isDivider: false }
+      { id: 'f10', name: 'Rum & Raisin', stock: 9, order: 9, isDivider: false },
+      { id: 'f11', name: 'Rocky Road', stock: 11, order: 10, isDivider: false },
+      { id: 'f12', name: 'Raspberry Ripple', stock: 5, order: 11, isDivider: false },
+      { id: 'f13', name: 'Espresso Fudge', stock: 1, order: 12, isDivider: false },
+      { id: 'f14', name: 'Coconut Cream', stock: 8, order: 13, isDivider: false },
+      { id: 'f15', name: 'Lemon Sorbet', stock: 14, order: 14, isDivider: false },
+      { id: 'f16', name: 'Honeycomb Crunch', stock: 4, order: 15, isDivider: false },
+      { id: 'f17', name: 'Banana Split', stock: 6, order: 16, isDivider: false },
+      { id: 'f18', name: 'Peanut Butter Swirl', stock: 0, order: 17, isDivider: false },
+      { id: 'f19', name: 'Blackcurrant Sorbet', stock: 7, order: 18, isDivider: false },
+      { id: 'f20', name: 'Passionfruit', stock: 9, order: 19, isDivider: false },
+      { id: 'f21', name: 'Cherry Bakewell', stock: 5, order: 20, isDivider: false },
+      { id: 'f22', name: 'Cotton Candy', stock: 12, order: 21, isDivider: false },
+      { id: 'f23', name: 'Matcha Green Tea', stock: 4, order: 22, isDivider: false },
+      { id: 'f24', name: 'Nutella Hazelnut', stock: 15, order: 23, isDivider: false },
+      { id: 'f25', name: 'Peach Melba', stock: 8, order: 24, isDivider: false },
+      { id: 'f26', name: 'Blueberry Cheesecake', stock: 3, order: 25, isDivider: false },
+      { id: 'f27', name: 'Praline Hazelnut', stock: 10, order: 26, isDivider: false },
+      { id: 'f28', name: 'Biscoff / Speculoos', stock: 2, order: 27, isDivider: false },
+      { id: 'f29', name: 'Salted Fudge', stock: 7, order: 28, isDivider: false },
+      { id: 'f30', name: 'Dulce de Leche', stock: 11, order: 29, isDivider: false }
     ];
 
     let savedLocal = localStorage.getItem('scooptrack_local_flavors');
@@ -420,6 +473,10 @@
     let db = null;
     let auth = null;
     let sortableInstance = null;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderFlavors();
+    });
 
     window.addEventListener('load', () => {
       initApp();
@@ -431,7 +488,7 @@
       let firebaseConnected = false;
       setTimeout(() => {
         if (!firebaseConnected) updateSyncStatus(true, "Offline Mode");
-      }, 1500);
+      }, 2000);
 
       try {
         const firebaseConfig = {
@@ -515,6 +572,8 @@
       const grid = document.getElementById('flavorGrid');
       const emptyState = document.getElementById('emptyState');
 
+      if (!grid) return;
+
       window.flavors.forEach((item, idx) => {
         if (item.order === undefined) item.order = idx;
       });
@@ -522,27 +581,28 @@
       const nonDividers = window.flavors.filter(f => !f.isDivider);
       const totalStock = nonDividers.reduce((acc, curr) => acc + (Number(curr.stock) || 0), 0);
 
-      document.getElementById('statTotalStock').innerText = totalStock;
-      document.getElementById('statTotalFlavors').innerText = nonDividers.length;
+      const statTotalStock = document.getElementById('statTotalStock');
+      const statTotalFlavors = document.getElementById('statTotalFlavors');
+
+      if (statTotalStock) statTotalStock.innerText = totalStock;
+      if (statTotalFlavors) statTotalFlavors.innerText = nonDividers.length;
 
       if (window.flavors.length === 0) {
         grid.innerHTML = '';
-        emptyState.classList.remove('hidden');
+        if (emptyState) emptyState.classList.remove('hidden');
         return;
       } else {
-        emptyState.classList.add('hidden');
+        if (emptyState) emptyState.classList.add('hidden');
       }
 
       grid.innerHTML = window.flavors.map((item) => {
         if (item.isDivider) {
           return `
-            <div data-id="${item.id}" class="draggable-row" data-divider-id="${item.id}" style="padding: 4px 0; background: transparent; border: none; box-shadow: none;">
-              <div style="display: flex; align-items: center; gap: 8px; width: 100%;">
-                <div class="drag-handle"><i class="fa-solid fa-grip-vertical" style="font-size: 10px;"></i></div>
-                <div style="flex-grow: 2px; height: 2px; background: #3a3a3c; border-radius: 2px;"></div>
-                ${item.name ? `<span style="font-size: 10px; font-weight: 700; color: #8e8e93; text-transform: uppercase;">${escapeHtml(item.name)}</span><div style="flex-grow: 2px; height: 2px; background: #3a3a3c; border-radius: 2px;"></div>` : ''}
-                <button onclick="deleteDivider('${item.id}')" style="border:none; background:#e5e5ea; width:18px; height:18px; border-radius:50%; cursor:pointer; color:#3a3a3c;"><i class="fa-solid fa-xmark" style="font-size:8px;"></i></button>
-              </div>
+            <div data-id="${item.id}" class="divider-row" data-divider-id="${item.id}">
+              <div class="drag-handle"><i class="fa-solid fa-grip-vertical" style="font-size: 11px;"></i></div>
+              <div class="divider-line"></div>
+              ${item.name ? `<span class="divider-text">${escapeHtml(item.name)}</span><div class="divider-line"></div>` : ''}
+              <button onclick="deleteDivider('${item.id}')" style="border:none; background:#e5e5ea; width:22px; height:22px; border-radius:50%; cursor:pointer; color:#3a3a3c; display:flex; align-items:center; justify-content:center;" title="Remove Divider"><i class="fa-solid fa-xmark" style="font-size:10px;"></i></button>
             </div>
           `;
         }
@@ -559,7 +619,7 @@
                 <button onclick="adjustStock('${item.id}', -1)" class="btn-press btn-count">-</button>
                 <button onclick="adjustStock('${item.id}', 1)" class="btn-press btn-count plus">+</button>
               </div>
-              <div style="text-align: right;">
+              <div class="stock-box">
                 <span class="stock-num">${item.stock}</span>
               </div>
             </div>
@@ -586,9 +646,7 @@
         }
       });
 
-      // Double tap / click to edit
       grid.querySelectorAll('.draggable-row[data-flavor-id]').forEach(row => {
-        let lastTap = 0;
         const flavorId = row.getAttribute('data-flavor-id');
         row.addEventListener('dblclick', (e) => {
           if (e.target.closest('button') || e.target.closest('.drag-handle')) return;
