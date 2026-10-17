@@ -138,36 +138,6 @@
       </div>
     </section>
 
-    <!-- Search & Filter Controls -->
-    <section class="mb-3 space-y-2">
-      <div class="flex flex-col sm:flex-row gap-2">
-        <!-- Search Input -->
-        <div class="relative flex-grow">
-          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-          <input type="text" id="searchInput" oninput="renderFlavors()" placeholder="Search flavors..." 
-            class="w-full pl-9 pr-4 py-2 rounded-2xl bg-white border border-slate-200/80 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-iosBlue/50 shadow-sm transition">
-        </div>
-      </div>
-
-      <!-- Quick Utilities Bar -->
-      <div class="flex items-center justify-between text-[11px] text-slate-500 px-1">
-        <button onclick="addDivider()" class="text-slate-600 font-semibold hover:underline flex items-center space-x-1 sm:hidden">
-          <i class="fa-solid fa-grip-lines text-[10px]"></i>
-          <span>Add Divider</span>
-        </button>
-        <div class="flex items-center space-x-2.5 ml-auto">
-          <button onclick="promptRestockAll()" class="text-iosBlue font-semibold hover:underline flex items-center space-x-1">
-            <i class="fa-solid fa-arrows-rotate text-[10px]"></i>
-            <span>Restock All</span>
-          </button>
-          <span>|</span>
-          <button onclick="resetToDefaultsPrompt()" class="text-slate-400 hover:text-rose-500 font-medium transition">
-            Reset Order
-          </button>
-        </div>
-      </div>
-    </section>
-
     <!-- Compact Full-Width Vertical List -->
     <section id="flavorGrid" class="flex flex-col space-y-1.5 w-full">
       <!-- Row Cards rendered via JS -->
@@ -456,16 +426,12 @@
     window.renderFlavors = function() {
       const grid = document.getElementById('flavorGrid');
       const emptyState = document.getElementById('emptyState');
-      const searchVal = (document.getElementById('searchInput')?.value || '').toLowerCase();
 
       window.flavors.forEach((item, idx) => {
         if (item.order === undefined) item.order = idx;
       });
 
-      let filtered = window.flavors.filter(item => {
-        if (item.isDivider) return true; 
-        return item.name.toLowerCase().includes(searchVal);
-      });
+      const filtered = window.flavors;
 
       const nonDividers = window.flavors.filter(f => !f.isDivider);
       const totalStock = nonDividers.reduce((acc, curr) => acc + (Number(curr.stock) || 0), 0);
@@ -481,21 +447,21 @@
         emptyState.classList.add('hidden');
       }
 
-      const isFilterActive = searchVal !== '';
+      const isFilterActive = false;
 
       grid.innerHTML = filtered.map((item) => {
         if (item.isDivider) {
           return `
-            <div data-id="${item.id}" class="draggable-row my-0.5 px-2 py-0.5 flex items-center justify-between w-full bg-slate-400/60 rounded-lg border border-slate-500/50">
-              <div class="flex items-center space-x-2 flex-1 min-w-0">
+            <div data-id="${item.id}" class="draggable-row my-0.5 px-1.5 py-0 flex items-center justify-between w-full bg-slate-600/80 rounded border border-slate-700/60">
+              <div class="flex items-center space-x-1.5 flex-1 min-w-0">
                 <!-- Drag Handle (Restricted dragging zone) -->
-                <div class="drag-handle text-slate-500 shrink-0 cursor-grab active:cursor-grabbing p-0.5">
-                  <i class="fa-solid fa-grip-vertical text-[10px]"></i>
+                <div class="drag-handle text-slate-400 shrink-0 cursor-grab active:cursor-grabbing p-0.5">
+                  <i class="fa-solid fa-grip-vertical text-[9px]"></i>
                 </div>
-                <div class="flex-grow h-[2px] bg-slate-500 rounded-full mx-1.5"></div>
+                <div class="flex-grow h-[1.5px] bg-slate-700 rounded-full mx-1"></div>
               </div>
-              <button onclick="deleteDivider('${item.id}')" class="btn-press w-4 h-4 rounded-full bg-slate-500/70 text-slate-200 hover:text-rose-300 flex items-center justify-center shrink-0 ml-1.5" title="Remove Divider">
-                <i class="fa-solid fa-xmark text-[8px]"></i>
+              <button onclick="deleteDivider('${item.id}')" class="btn-press w-3.5 h-3.5 rounded-full bg-slate-700/80 text-slate-300 hover:text-rose-300 flex items-center justify-center shrink-0 ml-1" title="Remove Divider">
+                <i class="fa-solid fa-xmark text-[7px]"></i>
               </button>
             </div>
           `;
@@ -739,46 +705,6 @@
           console.error("Add sync error:", err);
         }
       }
-    };
-
-    // Global Batch Actions
-    window.promptRestockAll = function() {
-      openConfirmModal(
-        "Restock All Flavors",
-        "Set stock count for all flavors to 10?",
-        async () => {
-          window.flavors.forEach(f => {
-            if (!f.isDivider) f.stock = 10;
-          });
-          saveToLocalStorage();
-          renderFlavors();
-          if (db) {
-            const batch = writeBatch(db);
-            window.flavors.forEach(f => {
-              if (!f.isDivider) {
-                const docRef = doc(db, 'icecream_flavors', f.id);
-                batch.update(docRef, { stock: 10 });
-              }
-            });
-            await batch.commit();
-          }
-        }
-      );
-    };
-
-    window.resetToDefaultsPrompt = function() {
-      openConfirmModal(
-        "Reset to Default Order",
-        "This will restore the original 30 default flavors and remove custom dividers. Continue?",
-        async () => {
-          window.flavors = JSON.parse(JSON.stringify(DEFAULT_30_FLAVORS));
-          saveToLocalStorage();
-          renderFlavors();
-          if (db) {
-            await seedDefaultFlavors();
-          }
-        }
-      );
     };
 
     function openConfirmModal(title, message, onConfirm) {
