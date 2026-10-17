@@ -11,23 +11,56 @@
   <meta name="apple-mobile-web-app-title" content="ScoopTrack">
   <link rel="apple-touch-icon" href="https://img.icons8.com/3d-fluency/180/ice-cream-cone.png">
 
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- SortableJS for flawless Mobile & Desktop Touch Dragging -->
+  <!-- SortableJS for Touch Dragging -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
     body {
       background-color: #F2F2F7;
+      color: #1c1c1e;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", Inter, sans-serif;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
       padding-bottom: env(safe-area-inset-bottom, 20px);
       padding-top: env(safe-area-inset-top, 0px);
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", Inter, sans-serif;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: rgba(249, 249, 249, 0.88);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border-bottom: 0.5px solid rgba(0, 0, 0, 0.12);
+      padding: 12px 16px;
+    }
+
+    .nav-container {
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    main {
+      max-width: 800px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 12px 16px;
+      flex-grow: 1;
     }
 
     .glass-card {
@@ -35,269 +68,350 @@
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 16px;
+      padding: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     }
 
-    .glass-nav {
-      background: rgba(249, 249, 249, 0.88);
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
-      border-bottom: 0.5px solid rgba(0, 0, 0, 0.12);
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
     }
 
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+    .stat-box {
+      text-align: center;
     }
-    ::-webkit-scrollbar-thumb {
-      background: rgba(0, 0, 0, 0.15);
+
+    .stat-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: #8e8e93;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-value {
+      font-size: 22px;
+      font-weight: 900;
+      color: #1c1c1e;
+      margin-top: 2px;
+    }
+
+    #flavorGrid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .draggable-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255, 255, 255, 0.90);
+      border-radius: 16px;
+      padding: 10px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .drag-handle {
+      color: #aeaeb2;
+      cursor: grab;
+      padding: 4px;
+      margin-right: 8px;
+    }
+    .drag-handle:active {
+      cursor: grabbing;
+    }
+
+    .flavor-name {
+      font-weight: 700;
+      font-size: 15px;
+      color: #1c1c1e;
+      word-break: break-word;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-count {
+      width: 32px;
+      height: 32px;
       border-radius: 10px;
+      border: 1px solid rgba(0,0,0,0.1);
+      font-weight: 900;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f2f2f7;
+      color: #1c1c1e;
+      cursor: pointer;
+    }
+    .btn-count.plus {
+      background: rgba(0, 122, 255, 0.1);
+      color: #007AFF;
+      border-color: rgba(0, 122, 255, 0.2);
+    }
+
+    .stock-num {
+      font-size: 18px;
+      font-weight: 900;
+      min-width: 36px;
+      text-align: right;
     }
 
     .btn-press {
       transition: transform 0.1s ease, opacity 0.1s ease;
+      cursor: pointer;
     }
     .btn-press:active {
       transform: scale(0.93);
       opacity: 0.8;
     }
 
-    .sortable-ghost {
-      opacity: 0.3;
-      background-color: #bae6fd !important;
+    .header-btns {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-    .sortable-chosen {
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+
+    .action-btn {
+      padding: 6px 12px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.8);
+      border: 1px solid #d1d1d6;
+      font-size: 12px;
+      font-weight: 600;
+      color: #3a3a3c;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .add-flavor-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #007AFF;
+      color: white;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+
+    /* Modals */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(4px);
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-overlay.hidden {
+      display: none;
+    }
+    .modal-card {
+      background: white;
+      border-radius: 24px;
+      max-width: 400px;
+      width: 100%;
+      padding: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+    .modal-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .input-group {
+      margin-bottom: 12px;
+    }
+    .input-group label {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      color: #8e8e93;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .input-group input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid #c7c7cc;
+      font-size: 14px;
+      outline: none;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .btn-main {
+      flex: 1;
+      padding: 10px;
+      border-radius: 12px;
+      background: #007AFF;
+      color: white;
+      border: none;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .btn-secondary {
+      flex: 1;
+      padding: 10px;
+      border-radius: 12px;
+      background: #f2f2f7;
+      color: #3a3a3c;
+      border: 1px solid #c7c7cc;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
     }
   </style>
 </head>
-<body class="text-slate-900 antialiased min-h-screen flex flex-col pb-12">
+<body>
 
-  <!-- Header / Navigation Bar -->
-  <header class="sticky top-0 z-30 glass-nav px-4 py-3 sm:px-6 shadow-sm">
-    <div class="max-w-4xl mx-auto flex items-center justify-between">
-      <div class="flex items-center space-x-2.5">
-        <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-pink-500 to-rose-400 flex items-center justify-center text-white shadow-md shadow-pink-200">
-          <i class="fa-solid fa-ice-cream text-lg"></i>
+  <!-- Header -->
+  <header>
+    <div class="nav-container">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div style="width: 36px; height: 36px; border-radius: 12px; background: linear-gradient(135deg, #ec4899, #f43f5e); display: flex; align-items: center; justify-content: center; color: white; box-shadow: 0 4px 10px rgba(236,72,153,0.3);">
+          <i class="fa-solid fa-ice-cream"></i>
         </div>
         <div>
-          <h1 class="text-lg font-bold tracking-tight text-slate-900 leading-tight">ScoopTrack</h1>
-          <p class="text-[11px] text-slate-500 font-medium leading-none" id="syncStatus">
-            <i class="fa-solid fa-circle-notch fa-spin text-[#007AFF] mr-1"></i> Loading app...
+          <h1 style="font-size: 16px; font-weight: 800; line-height: 1.1;">ScoopTrack</h1>
+          <p id="syncStatus" style="font-size: 11px; color: #8e8e93; font-weight: 500;">
+            <i class="fa-solid fa-circle-notch fa-spin" style="color: #007AFF;"></i> Loading app...
           </p>
         </div>
       </div>
 
-      <!-- Header Action Buttons -->
-      <div class="flex items-center space-x-2">
-        <button onclick="openPwaModal()" class="btn-press px-3 py-1.5 rounded-full bg-white/80 border border-slate-200 text-xs font-semibold text-slate-700 shadow-sm flex items-center space-x-1">
-          <i class="fa-solid fa-square-plus text-[#007AFF]"></i>
-          <span class="hidden sm:inline">Add to Home Screen</span>
+      <div class="header-btns">
+        <button onclick="openPwaModal()" class="btn-press action-btn">
+          <i class="fa-solid fa-square-plus" style="color: #007AFF;"></i>
+          <span style="display: none; @media(min-width: 640px){display:inline;}">Install</span>
         </button>
-        <button onclick="addDivider()" class="btn-press px-3 py-1.5 rounded-full bg-slate-200/80 border border-slate-300 text-xs font-semibold text-slate-700 shadow-sm flex items-center space-x-1" title="Add Divider">
-          <i class="fa-solid fa-grip-lines text-slate-500"></i>
-          <span class="hidden sm:inline">Add Divider</span>
+        <button onclick="addDivider()" class="btn-press action-btn" title="Add Divider">
+          <i class="fa-solid fa-grip-lines" style="color: #8e8e93;"></i>
         </button>
-        <button onclick="openAddFlavorModal()" class="btn-press w-8 h-8 rounded-full bg-[#007AFF] text-white flex items-center justify-center shadow-md shadow-blue-200" title="Add New Flavor">
-          <i class="fa-solid fa-plus text-xs"></i>
+        <button onclick="openAddFlavorModal()" class="btn-press add-flavor-btn" title="Add New Flavor">
+          <i class="fa-solid fa-plus"></i>
         </button>
       </div>
     </div>
   </header>
 
-  <main class="max-w-4xl mx-auto px-3 sm:px-6 pt-3 w-full flex-grow">
-
-    <!-- Metrics Summary Dashboard -->
-    <section class="grid grid-cols-2 gap-2.5 mb-3">
-      <div class="glass-card rounded-2xl p-2.5 sm:p-3 text-center shadow-sm">
-        <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Total Tubs</p>
-        <p id="statTotalStock" class="text-xl sm:text-2xl font-black text-slate-800 mt-0.5">0</p>
+  <!-- Main Content -->
+  <main>
+    <!-- Stats Dashboard -->
+    <section class="stats-grid">
+      <div class="glass-card stat-box">
+        <p class="stat-title">Total Tubs</p>
+        <p id="statTotalStock" class="stat-value">0</p>
       </div>
-      <div class="glass-card rounded-2xl p-2.5 sm:p-3 text-center shadow-sm">
-        <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Flavors</p>
-        <p id="statTotalFlavors" class="text-xl sm:text-2xl font-black text-slate-800 mt-0.5">0</p>
+      <div class="glass-card stat-box">
+        <p class="stat-title">Flavors</p>
+        <p id="statTotalFlavors" class="stat-value">0</p>
       </div>
     </section>
 
-    <!-- Compact Full-Width Vertical List -->
-    <section id="flavorGrid" class="flex flex-col space-y-1.5 w-full">
-      <!-- Row Cards rendered via JS -->
+    <!-- Flavor List -->
+    <section id="flavorGrid">
+      <!-- Rendered via JS -->
     </section>
 
-    <!-- Empty State Container -->
-    <div id="emptyState" class="hidden text-center py-12 px-4">
-      <div class="w-12 h-12 mx-auto mb-2 text-slate-300">
-        <i class="fa-solid fa-box-open text-4xl"></i>
-      </div>
-      <h3 class="text-sm font-semibold text-slate-700">No flavors found</h3>
-      <p class="text-xs text-slate-500 mt-0.5">Try adjusting search settings.</p>
+    <div id="emptyState" class="hidden" style="text-align: center; padding: 40px 0; color: #8e8e93;">
+      <i class="fa-solid fa-box-open" style="font-size: 36px; margin-bottom: 8px;"></i>
+      <p style="font-size: 13px; font-weight: 600;">No flavors found</p>
     </div>
-
   </main>
 
-  <!-- EDIT FLAVOR MODAL -->
-  <div id="editModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-3xl max-w-md w-full p-5 shadow-2xl transform transition-all">
-      <div class="flex items-center justify-between mb-3">
-        <h3 class="text-base font-bold text-slate-900">Edit Flavor Details</h3>
-        <button onclick="closeEditModal()" class="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200">
-          <i class="fa-solid fa-xmark text-xs"></i>
-        </button>
+  <!-- EDIT MODAL -->
+  <div id="editModal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h3 class="modal-title" style="margin:0;">Edit Flavor</h3>
+        <button onclick="closeEditModal()" style="background:#f2f2f7; border:none; width:28px; height:28px; border-radius:50%; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
       </div>
-
       <input type="hidden" id="editFlavorId">
-
-      <div class="space-y-3.5 text-xs">
-        <div>
-          <label class="block font-semibold text-slate-500 uppercase mb-1">Flavor Name</label>
-          <input type="text" id="editFlavorName" class="w-full px-3 py-2 rounded-xl border border-slate-200 font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#007AFF]">
-        </div>
-
-        <div>
-          <label class="block font-semibold text-slate-500 uppercase mb-1">Stock Count</label>
-          <input type="number" id="editFlavorStock" min="0" class="w-full px-3 py-2 rounded-xl border border-slate-200 font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#007AFF]">
-        </div>
+      <div class="input-group">
+        <label>Flavor Name</label>
+        <input type="text" id="editFlavorName">
       </div>
-
-      <div class="flex items-center space-x-2 mt-5">
-        <button onclick="deleteCurrentFlavor()" class="px-3.5 py-2 rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50 text-xs font-bold transition">
-          Delete
-        </button>
-        <div class="flex-grow flex space-x-2">
-          <button onclick="closeEditModal()" class="flex-1 py-2 rounded-xl border border-slate-200 text-slate-600 text-xs font-bold hover:bg-slate-50">
-            Cancel
-          </button>
-          <button onclick="saveFlavorEdit()" class="flex-1 py-2 rounded-xl bg-[#007AFF] text-white text-xs font-bold shadow-md shadow-blue-200 hover:bg-blue-600">
-            Save Changes
-          </button>
-        </div>
+      <div class="input-group">
+        <label>Stock Count</label>
+        <input type="number" id="editFlavorStock" min="0">
+      </div>
+      <div style="display: flex; gap: 8px; margin-top: 16px;">
+        <button onclick="deleteCurrentFlavor()" style="padding: 10px 14px; border-radius: 12px; background: #fff; border: 1px solid #ff3b30; color: #ff3b30; font-weight: 700; cursor:pointer;">Delete</button>
+        <button onclick="closeEditModal()" class="btn-secondary">Cancel</button>
+        <button onclick="saveFlavorEdit()" class="btn-main">Save</button>
       </div>
     </div>
   </div>
 
-  <!-- ADD FLAVOR MODAL -->
-  <div id="addModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-3xl max-w-md w-full p-5 shadow-2xl">
-      <div class="flex items-center justify-between mb-3">
-        <h3 class="text-base font-bold text-slate-900">Add New Flavor</h3>
-        <button onclick="closeAddModal()" class="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200">
-          <i class="fa-solid fa-xmark text-xs"></i>
-        </button>
+  <!-- ADD MODAL -->
+  <div id="addModal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h3 class="modal-title" style="margin:0;">Add New Flavor</h3>
+        <button onclick="closeAddModal()" style="background:#f2f2f7; border:none; width:28px; height:28px; border-radius:50%; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
       </div>
-
-      <div class="space-y-3 text-xs">
-        <div>
-          <label class="block font-semibold text-slate-500 uppercase mb-1">Flavor Name</label>
-          <input type="text" id="addFlavorName" placeholder="e.g. Salted Caramel Crunch" class="w-full px-3 py-2 rounded-xl border border-slate-200 font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#007AFF]">
-        </div>
-
-        <div>
-          <label class="block font-semibold text-slate-500 uppercase mb-1">Initial Stock Level</label>
-          <input type="number" id="addFlavorStock" value="10" min="0" class="w-full px-3 py-2 rounded-xl border border-slate-200 font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#007AFF]">
-        </div>
+      <div class="input-group">
+        <label>Flavor Name</label>
+        <input type="text" id="addFlavorName" placeholder="e.g. Salted Caramel">
       </div>
-
-      <div class="flex items-center space-x-2 mt-5">
-        <button onclick="closeAddModal()" class="flex-1 py-2 rounded-xl border border-slate-200 text-slate-600 text-xs font-bold hover:bg-slate-50">
-          Cancel
-        </button>
-        <button onclick="saveNewFlavor()" class="flex-1 py-2 rounded-xl bg-[#007AFF] text-white text-xs font-bold shadow-md shadow-blue-200 hover:bg-blue-600">
-          Add Flavor
-        </button>
+      <div class="input-group">
+        <label>Initial Stock</label>
+        <input type="number" id="addFlavorStock" value="10" min="0">
+      </div>
+      <div class="modal-actions">
+        <button onclick="closeAddModal()" class="btn-secondary">Cancel</button>
+        <button onclick="saveNewFlavor()" class="btn-main">Add</button>
       </div>
     </div>
   </div>
 
-  <!-- iOS PWA INSTALLATION MODAL -->
-  <div id="pwaModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden">
-    <div class="bg-white rounded-t-3xl sm:rounded-3xl max-w-md w-full p-5 shadow-2xl border border-slate-100">
-      <div class="flex items-center justify-between mb-3">
-        <div class="flex items-center space-x-3">
-          <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-pink-500 to-rose-400 flex items-center justify-center text-white shadow-md">
-            <i class="fa-solid fa-ice-cream text-xl"></i>
-          </div>
-          <div>
-            <h3 class="text-sm font-bold text-slate-900">Install ScoopTrack</h3>
-            <p class="text-[11px] text-slate-500">Use like an iOS App</p>
-          </div>
-        </div>
-        <button onclick="closePwaModal()" class="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-slate-500">
-          <i class="fa-solid fa-xmark text-xs"></i>
-        </button>
-      </div>
-
-      <div class="space-y-2.5 my-3 text-xs text-slate-600 leading-relaxed">
-        <div class="flex items-start space-x-2.5 bg-slate-50 p-2.5 rounded-xl">
-          <span class="w-5 h-5 rounded-full bg-[#007AFF] text-white flex items-center justify-center font-bold text-[10px] shrink-0">1</span>
-          <p>Tap the <strong class="text-slate-900">Share button</strong> <i class="fa-solid fa-share-from-square text-[#007AFF]"></i> in Safari.</p>
-        </div>
-        <div class="flex items-start space-x-2.5 bg-slate-50 p-2.5 rounded-xl">
-          <span class="w-5 h-5 rounded-full bg-[#007AFF] text-white flex items-center justify-center font-bold text-[10px] shrink-0">2</span>
-          <p>Select <strong class="text-slate-900">'Add to Home Screen'</strong> <i class="fa-regular fa-square-plus text-slate-800"></i>.</p>
-        </div>
-        <div class="flex items-start space-x-2.5 bg-slate-50 p-2.5 rounded-xl">
-          <span class="w-5 h-5 rounded-full bg-[#007AFF] text-white flex items-center justify-center font-bold text-[10px] shrink-0">3</span>
-          <p>Tap <strong class="text-slate-900">'Add'</strong>. ScoopTrack will launch full-screen!</p>
-        </div>
-      </div>
-
-      <button onclick="closePwaModal()" class="w-full py-2.5 rounded-xl bg-slate-900 text-white text-xs font-bold">
-        Got it!
-      </button>
+  <!-- PWA MODAL -->
+  <div id="pwaModal" class="modal-overlay hidden" style="align-items: flex-end;">
+    <div class="modal-card" style="border-radius: 24px 24px 0 0;">
+      <h3 class="modal-title">Install ScoopTrack</h3>
+      <p style="font-size: 12px; color: #636366; margin-bottom: 12px;">Tap the Share button <i class="fa-solid fa-share-from-square text-[#007AFF]"></i> in Safari, then select <strong>'Add to Home Screen'</strong>.</p>
+      <button onclick="closePwaModal()" class="btn-main" style="width:100%;">Got it!</button>
     </div>
   </div>
 
-  <!-- CONFIRMATION MODAL -->
-  <div id="confirmModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-3xl max-w-xs w-full p-4 text-center shadow-2xl">
-      <div id="confirmIcon" class="w-10 h-10 rounded-full bg-rose-100 text-rose-500 flex items-center justify-center mx-auto mb-2 text-lg">
-        <i class="fa-solid fa-triangle-exclamation"></i>
-      </div>
-      <h3 id="confirmTitle" class="text-sm font-bold text-slate-900 mb-0.5">Are you sure?</h3>
-      <p id="confirmMessage" class="text-xs text-slate-500 mb-4">This action will update all items.</p>
-      <div class="flex space-x-2">
-        <button onclick="closeConfirmModal(false)" class="flex-1 py-2 rounded-xl border border-slate-200 text-slate-600 text-xs font-bold">Cancel</button>
-        <button id="confirmActionBtn" class="flex-1 py-2 rounded-xl bg-rose-500 text-white text-xs font-bold shadow-md shadow-rose-200">Confirm</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Firebase Module Script -->
+  <!-- Firebase Script -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import { getFirestore, collection, doc, onSnapshot, setDoc, updateDoc, deleteDoc, writeBatch } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     const DEFAULT_30_FLAVORS = [
-      { id: 'f1', name: 'Vanilla Bean', color: '#FFF3BF', stock: 12, order: 0, isDivider: false },
-      { id: 'f2', name: 'Double Chocolate', color: '#795548', stock: 8, order: 1, isDivider: false },
-      { id: 'f3', name: 'Strawberry Cream', color: '#FCC2D7', stock: 15, order: 2, isDivider: false },
-      { id: 'f4', name: 'Mint Choc Chip', color: '#B1F2D9', stock: 4, order: 3, isDivider: false },
-      { id: 'f5', name: 'Salted Caramel', color: '#FFD8A8', stock: 6, order: 4, isDivider: false },
-      { id: 'f6', name: 'Cookies & Cream', color: '#E9ECEF', stock: 10, order: 5, isDivider: false },
-      { id: 'f7', name: 'Mango Sorbet', color: '#FFD43B', stock: 3, order: 6, isDivider: false },
-      { id: 'f8', name: 'Pistachio', color: '#C0EB75', stock: 7, order: 7, isDivider: false },
-      { id: 'f9', name: 'Bubblegum', color: '#74C0FC', stock: 2, order: 8, isDivider: false },
-      { id: 'f10', name: 'Rum & Raisin', color: '#D946EF', stock: 9, order: 9, isDivider: false },
-      { id: 'f11', name: 'Rocky Road', color: '#8D493A', stock: 11, order: 10, isDivider: false },
-      { id: 'f12', name: 'Raspberry Ripple', color: '#FF8787', stock: 5, order: 11, isDivider: false },
-      { id: 'f13', name: 'Espresso Fudge', color: '#4E342E', stock: 1, order: 12, isDivider: false },
-      { id: 'f14', name: 'Coconut Cream', color: '#F8F9FA', stock: 8, order: 13, isDivider: false },
-      { id: 'f15', name: 'Lemon Sorbet', color: '#FFE066', stock: 14, order: 14, isDivider: false },
-      { id: 'f16', name: 'Honeycomb Crunch', color: '#FFA94D', stock: 4, order: 15, isDivider: false },
-      { id: 'f17', name: 'Banana Split', color: '#FFF0F6', stock: 6, order: 16, isDivider: false },
-      { id: 'f18', name: 'Peanut Butter Swirl', color: '#E65100', stock: 0, order: 17, isDivider: false },
-      { id: 'f19', name: 'Blackcurrant Sorbet', color: '#9C27B0', stock: 7, order: 18, isDivider: false },
-      { id: 'f20', name: 'Passionfruit', color: '#FF6F00', stock: 9, order: 19, isDivider: false },
-      { id: 'f21', name: 'Cherry Bakewell', color: '#F44336', stock: 5, order: 20, isDivider: false },
-      { id: 'f22', name: 'Cotton Candy', color: '#F06292', stock: 12, order: 21, isDivider: false },
-      { id: 'f23', name: 'Matcha Green Tea', color: '#66BB6A', stock: 4, order: 22, isDivider: false },
-      { id: 'f24', name: 'Nutella Hazelnut', color: '#5D4037', stock: 15, order: 23, isDivider: false },
-      { id: 'f25', name: 'Peach Melba', color: '#FFAB91', stock: 8, order: 24, isDivider: false },
-      { id: 'f26', name: 'Blueberry Cheesecake', color: '#5C6BC0', stock: 3, order: 25, isDivider: false },
-      { id: 'f27', name: 'Praline Hazelnut', color: '#A1887F', stock: 10, order: 26, isDivider: false },
-      { id: 'f28', name: 'Biscoff / Speculoos', color: '#FB8C00', stock: 2, order: 27, isDivider: false },
-      { id: 'f29', name: 'Salted Fudge', color: '#D7CCC8', stock: 7, order: 28, isDivider: false },
-      { id: 'f30', name: 'Dulce de Leche', color: '#FFA000', stock: 11, order: 29, isDivider: false }
+      { id: 'f1', name: 'Vanilla Bean', stock: 12, order: 0, isDivider: false },
+      { id: 'f2', name: 'Double Chocolate', stock: 8, order: 1, isDivider: false },
+      { id: 'f3', name: 'Strawberry Cream', stock: 15, order: 2, isDivider: false },
+      { id: 'f4', name: 'Mint Choc Chip', stock: 4, order: 3, isDivider: false },
+      { id: 'f5', name: 'Salted Caramel', stock: 6, order: 4, isDivider: false },
+      { id: 'f6', name: 'Cookies & Cream', stock: 10, order: 5, isDivider: false },
+      { id: 'f7', name: 'Mango Sorbet', stock: 3, order: 6, isDivider: false },
+      { id: 'f8', name: 'Pistachio', stock: 7, order: 7, isDivider: false },
+      { id: 'f9', name: 'Bubblegum', stock: 2, order: 8, isDivider: false },
+      { id: 'f10', name: 'Rum & Raisin', stock: 9, order: 9, isDivider: false }
     ];
 
     let savedLocal = localStorage.getItem('scooptrack_local_flavors');
@@ -315,10 +429,8 @@
       renderFlavors();
 
       let firebaseConnected = false;
-      const connectionTimeout = setTimeout(() => {
-        if (!firebaseConnected) {
-          updateSyncStatus(true, "Offline Mode");
-        }
+      setTimeout(() => {
+        if (!firebaseConnected) updateSyncStatus(true, "Offline Mode");
       }, 1500);
 
       try {
@@ -337,12 +449,9 @@
 
         await signInAnonymously(auth);
         firebaseConnected = true;
-        clearTimeout(connectionTimeout);
-
         setupRealtimeListener();
       } catch (err) {
-        console.warn("Cloud connection bypassed, using local mode:", err);
-        clearTimeout(connectionTimeout);
+        console.warn("Cloud connection bypassed:", err);
         updateSyncStatus(true, "Offline Mode");
       }
     }
@@ -355,11 +464,7 @@
           snapshot.forEach(docSnap => {
             list.push({ id: docSnap.id, ...docSnap.data() });
           });
-          list.sort((a, b) => {
-            const orderA = a.order !== undefined ? a.order : 999;
-            const orderB = b.order !== undefined ? b.order : 999;
-            return orderA - orderB;
-          });
+          list.sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
           window.flavors = list;
           saveToLocalStorage();
           updateSyncStatus(true, "Cloud Synced");
@@ -382,7 +487,6 @@
           const docRef = doc(db, 'icecream_flavors', item.id);
           batch.set(docRef, { 
             name: item.name, 
-            color: item.color || '#EC4899', 
             stock: item.stock, 
             order: item.order, 
             isDivider: !!item.isDivider 
@@ -391,7 +495,7 @@
         await batch.commit();
         updateSyncStatus(true, "Cloud Synced");
       } catch (err) {
-        console.error("Upload local state error:", err);
+        console.error("Upload error:", err);
       }
     }
 
@@ -403,8 +507,8 @@
       const el = document.getElementById('syncStatus');
       if (!el) return;
       el.innerHTML = isLive 
-        ? `<i class="fa-solid fa-cloud text-[#34C759] mr-1"></i> ${label}` 
-        : `<i class="fa-solid fa-circle-notch fa-spin text-[#007AFF] mr-1"></i> ${label}`;
+        ? `<i class="fa-solid fa-cloud" style="color: #34C759;"></i> ${label}` 
+        : `<i class="fa-solid fa-circle-notch fa-spin" style="color: #007AFF;"></i> ${label}`;
     }
 
     window.renderFlavors = function() {
@@ -415,14 +519,13 @@
         if (item.order === undefined) item.order = idx;
       });
 
-      const filtered = window.flavors;
       const nonDividers = window.flavors.filter(f => !f.isDivider);
       const totalStock = nonDividers.reduce((acc, curr) => acc + (Number(curr.stock) || 0), 0);
 
       document.getElementById('statTotalStock').innerText = totalStock;
       document.getElementById('statTotalFlavors').innerText = nonDividers.length;
 
-      if (filtered.length === 0) {
+      if (window.flavors.length === 0) {
         grid.innerHTML = '';
         emptyState.classList.remove('hidden');
         return;
@@ -430,46 +533,34 @@
         emptyState.classList.add('hidden');
       }
 
-      grid.innerHTML = filtered.map((item) => {
+      grid.innerHTML = window.flavors.map((item) => {
         if (item.isDivider) {
           return `
-            <div data-id="${item.id}" class="draggable-row my-1 px-0 py-0.5 flex items-center justify-between w-full" data-divider-id="${item.id}">
-              <div class="flex items-center space-x-1.5 flex-1 min-w-0">
-                <div class="drag-handle text-slate-500 shrink-0 cursor-grab active:cursor-grabbing p-0.5">
-                  <i class="fa-solid fa-grip-vertical text-[10px]"></i>
-                </div>
-                <div class="flex-grow h-[2px] bg-slate-800 rounded-full"></div>
-                ${item.name ? `<span class="text-[10px] sm:text-xs font-semibold text-slate-600 uppercase tracking-wider px-1.5 shrink-0 max-w-[40%] truncate" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</span><div class="flex-grow h-[2px] bg-slate-800 rounded-full"></div>` : ''}
+            <div data-id="${item.id}" class="draggable-row" data-divider-id="${item.id}" style="padding: 4px 0; background: transparent; border: none; box-shadow: none;">
+              <div style="display: flex; align-items: center; gap: 8px; width: 100%;">
+                <div class="drag-handle"><i class="fa-solid fa-grip-vertical" style="font-size: 10px;"></i></div>
+                <div style="flex-grow: 2px; height: 2px; background: #3a3a3c; border-radius: 2px;"></div>
+                ${item.name ? `<span style="font-size: 10px; font-weight: 700; color: #8e8e93; text-transform: uppercase;">${escapeHtml(item.name)}</span><div style="flex-grow: 2px; height: 2px; background: #3a3a3c; border-radius: 2px;"></div>` : ''}
+                <button onclick="deleteDivider('${item.id}')" style="border:none; background:#e5e5ea; width:18px; height:18px; border-radius:50%; cursor:pointer; color:#3a3a3c;"><i class="fa-solid fa-xmark" style="font-size:8px;"></i></button>
               </div>
-              <button onclick="deleteDivider('${item.id}')" class="btn-press w-4 h-4 rounded-full bg-slate-200 text-slate-600 hover:bg-rose-100 hover:text-rose-500 flex items-center justify-center shrink-0 ml-1.5" title="Remove Divider">
-                <i class="fa-solid fa-xmark text-[8px]"></i>
-              </button>
             </div>
           `;
         }
 
         return `
-          <div data-id="${item.id}" class="draggable-row glass-card rounded-2xl px-3 py-2.5 shadow-sm border border-white/85 flex items-center justify-between space-x-2 w-full" data-flavor-id="${item.id}">
-            <div class="flex items-center space-x-2.5 min-w-0 flex-1">
-              <div class="drag-handle text-slate-300 hover:text-slate-400 shrink-0 cursor-grab active:cursor-grabbing p-1">
-                <i class="fa-solid fa-grip-vertical text-xs"></i>
-              </div>
-              <div class="flex flex-wrap items-center gap-1 min-w-0 pr-1">
-                <h2 class="font-bold text-sm sm:text-base text-slate-800 leading-snug break-words" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</h2>
-              </div>
+          <div data-id="${item.id}" class="draggable-row" data-flavor-id="${item.id}">
+            <div style="display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0;">
+              <div class="drag-handle"><i class="fa-solid fa-grip-vertical"></i></div>
+              <h2 class="flavor-name" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</h2>
             </div>
 
-            <div class="flex items-center space-x-1.5 shrink-0">
-              <div class="flex items-center space-x-1">
-                <button onclick="adjustStock('${item.id}', -1)" class="btn-press w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-black text-sm sm:text-base flex items-center justify-center border border-slate-200/50 leading-none pb-0.5">
-                  -
-                </button>
-                <button onclick="adjustStock('${item.id}', 1)" class="btn-press w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-[#007AFF]/10 hover:bg-[#007AFF]/20 text-[#007AFF] font-black text-sm sm:text-base flex items-center justify-center border border-[#007AFF]/20 leading-none pb-0.5">
-                  +
-                </button>
+            <div class="controls">
+              <div style="display: flex; gap: 4px;">
+                <button onclick="adjustStock('${item.id}', -1)" class="btn-press btn-count">-</button>
+                <button onclick="adjustStock('${item.id}', 1)" class="btn-press btn-count plus">+</button>
               </div>
-              <div class="text-right px-1 min-w-[32px] sm:min-w-[40px]">
-                <span class="text-base sm:text-lg font-black text-slate-900 leading-none">${item.stock}</span>
+              <div style="text-align: right;">
+                <span class="stock-num">${item.stock}</span>
               </div>
             </div>
           </div>
@@ -495,46 +586,14 @@
         }
       });
 
+      // Double tap / click to edit
       grid.querySelectorAll('.draggable-row[data-flavor-id]').forEach(row => {
         let lastTap = 0;
         const flavorId = row.getAttribute('data-flavor-id');
-
         row.addEventListener('dblclick', (e) => {
           if (e.target.closest('button') || e.target.closest('.drag-handle')) return;
           openEditModal(flavorId);
         });
-
-        row.addEventListener('touchend', (e) => {
-          if (e.target.closest('button') || e.target.closest('.drag-handle')) return;
-          const now = Date.now();
-          if (now - lastTap < 300) {
-            openEditModal(flavorId);
-            lastTap = 0;
-          } else {
-            lastTap = now;
-          }
-        }, { passive: true });
-      });
-
-      grid.querySelectorAll('.draggable-row[data-divider-id]').forEach(row => {
-        let lastTap = 0;
-        const dividerId = row.getAttribute('data-divider-id');
-
-        row.addEventListener('dblclick', (e) => {
-          if (e.target.closest('button') || e.target.closest('.drag-handle')) return;
-          editDivider(dividerId);
-        });
-
-        row.addEventListener('touchend', (e) => {
-          if (e.target.closest('button') || e.target.closest('.drag-handle')) return;
-          const now = Date.now();
-          if (now - lastTap < 300) {
-            editDivider(dividerId);
-            lastTap = 0;
-          } else {
-            lastTap = now;
-          }
-        }, { passive: true });
       });
     };
 
@@ -550,3 +609,137 @@
 
       if (db) {
         try {
+          const docRef = doc(db, 'icecream_flavors', newId);
+          await setDoc(docRef, { name: label.trim(), isDivider: true, order: newOrder });
+        } catch (err) { console.error(err); }
+      }
+    };
+
+    window.deleteDivider = async function(id) {
+      window.flavors = window.flavors.filter(f => f.id !== id);
+      window.flavors.forEach((f, idx) => f.order = idx);
+      saveToLocalStorage();
+      renderFlavors();
+      if (db) {
+        try {
+          await deleteDoc(doc(db, 'icecream_flavors', id));
+          await persistNewOrder();
+        } catch (err) { console.error(err); }
+      }
+    };
+
+    async function persistNewOrder() {
+      if (!db) return;
+      try {
+        const batch = writeBatch(db);
+        window.flavors.forEach((item, idx) => {
+          const docRef = doc(db, 'icecream_flavors', item.id);
+          batch.update(docRef, { order: idx });
+        });
+        await batch.commit();
+      } catch (err) { console.error(err); }
+    }
+
+    window.adjustStock = async function(id, delta) {
+      const item = window.flavors.find(f => f.id === id);
+      if (!item) return;
+      item.stock = Math.max(0, (Number(item.stock) || 0) + delta);
+      saveToLocalStorage();
+      renderFlavors();
+      if (db) {
+        try {
+          await updateDoc(doc(db, 'icecream_flavors', id), { stock: item.stock });
+        } catch (err) { console.error(err); }
+      }
+    };
+
+    window.openEditModal = function(id) {
+      const item = window.flavors.find(f => f.id === id);
+      if (!item) return;
+      document.getElementById('editFlavorId').value = item.id;
+      document.getElementById('editFlavorName').value = item.name;
+      document.getElementById('editFlavorStock').value = item.stock;
+      document.getElementById('editModal').classList.remove('hidden');
+    };
+
+    window.closeEditModal = function() {
+      document.getElementById('editModal').classList.add('hidden');
+    };
+
+    window.saveFlavorEdit = async function() {
+      const id = document.getElementById('editFlavorId').value;
+      const name = document.getElementById('editFlavorName').value.trim();
+      const stock = parseInt(document.getElementById('editFlavorStock').value, 10) || 0;
+      if (!name) return;
+
+      const item = window.flavors.find(f => f.id === id);
+      if (item) {
+        item.name = name;
+        item.stock = stock;
+        saveToLocalStorage();
+        renderFlavors();
+      }
+      closeEditModal();
+      if (db) {
+        try {
+          await updateDoc(doc(db, 'icecream_flavors', id), { name, stock });
+        } catch (err) { console.error(err); }
+      }
+    };
+
+    window.deleteCurrentFlavor = function() {
+      const id = document.getElementById('editFlavorId').value;
+      const item = window.flavors.find(f => f.id === id);
+      if (!item) return;
+      closeEditModal();
+      if (confirm(`Delete "${item.name}"?`)) {
+        window.flavors = window.flavors.filter(f => f.id !== id);
+        window.flavors.forEach((f, idx) => f.order = idx);
+        saveToLocalStorage();
+        renderFlavors();
+        if (db) {
+          deleteDoc(doc(db, 'icecream_flavors', id));
+          persistNewOrder();
+        }
+      }
+    };
+
+    window.openAddFlavorModal = function() {
+      document.getElementById('addFlavorName').value = '';
+      document.getElementById('addFlavorStock').value = '10';
+      document.getElementById('addModal').classList.remove('hidden');
+    };
+    window.closeAddModal = function() {
+      document.getElementById('addModal').classList.add('hidden');
+    };
+
+    window.saveNewFlavor = async function() {
+      const name = document.getElementById('addFlavorName').value.trim();
+      const stock = parseInt(document.getElementById('addFlavorStock').value, 10) || 0;
+      if (!name) return;
+
+      const newId = 'f_' + Date.now();
+      const newOrder = window.flavors.length;
+      const newFlavor = { id: newId, name, stock, order: newOrder, isDivider: false };
+
+      window.flavors.push(newFlavor);
+      saveToLocalStorage();
+      renderFlavors();
+      closeAddModal();
+
+      if (db) {
+        try {
+          await setDoc(doc(db, 'icecream_flavors', newId), { name, stock, order: newOrder, isDivider: false });
+        } catch (err) { console.error(err); }
+      }
+    };
+
+    window.openPwaModal = function() { document.getElementById('pwaModal').classList.remove('hidden'); }
+    window.closePwaModal = function() { document.getElementById('pwaModal').classList.add('hidden'); }
+
+    function escapeHtml(str) {
+      return (str || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+  </script>
+</body>
+</html>
