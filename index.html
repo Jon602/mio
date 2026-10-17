@@ -222,6 +222,7 @@
       width: 100%;
       padding: 10px 0;
       gap: 8px;
+      cursor: pointer;
     }
     .divider-line {
       flex-grow: 1;
@@ -602,7 +603,7 @@
               <div class="drag-handle"><i class="fa-solid fa-grip-vertical" style="font-size: 11px;"></i></div>
               <div class="divider-line"></div>
               ${item.name ? `<span class="divider-text">${escapeHtml(item.name)}</span><div class="divider-line"></div>` : ''}
-              <button onclick="deleteDivider('${item.id}')" style="border:none; background:#e5e5ea; width:22px; height:22px; border-radius:50%; cursor:pointer; color:#3a3a3c; display:flex; align-items:center; justify-content:center;" title="Remove Divider"><i class="fa-solid fa-xmark" style="font-size:10px;"></i></button>
+              <button onclick="event.stopPropagation(); deleteDivider('${item.id}')" style="border:none; background:#e5e5ea; width:22px; height:22px; border-radius:50%; cursor:pointer; color:#3a3a3c; display:flex; align-items:center; justify-content:center;" title="Remove Divider"><i class="fa-solid fa-xmark" style="font-size:10px;"></i></button>
             </div>
           `;
         }
@@ -646,11 +647,21 @@
         }
       });
 
+      // Double click / tap to edit flavor rows
       grid.querySelectorAll('.draggable-row[data-flavor-id]').forEach(row => {
         const flavorId = row.getAttribute('data-flavor-id');
         row.addEventListener('dblclick', (e) => {
           if (e.target.closest('button') || e.target.closest('.drag-handle')) return;
           openEditModal(flavorId);
+        });
+      });
+
+      // Double click / tap to edit divider rows
+      grid.querySelectorAll('.divider-row[data-divider-id]').forEach(row => {
+        const dividerId = row.getAttribute('data-divider-id');
+        row.addEventListener('dblclick', (e) => {
+          if (e.target.closest('button') || e.target.closest('.drag-handle')) return;
+          editDivider(dividerId);
         });
       });
     };
@@ -669,6 +680,23 @@
         try {
           const docRef = doc(db, 'icecream_flavors', newId);
           await setDoc(docRef, { name: label.trim(), isDivider: true, order: newOrder });
+        } catch (err) { console.error(err); }
+      }
+    };
+
+    window.editDivider = async function(id) {
+      const item = window.flavors.find(f => f.id === id);
+      if (!item) return;
+      const newLabel = prompt('Edit divider label:', item.name);
+      if (newLabel === null) return; // Cancelled
+
+      item.name = newLabel.trim();
+      saveToLocalStorage();
+      renderFlavors();
+
+      if (db) {
+        try {
+          await updateDoc(doc(db, 'icecream_flavors', id), { name: item.name });
         } catch (err) { console.error(err); }
       }
     };
