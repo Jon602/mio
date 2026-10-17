@@ -30,7 +30,6 @@
       user-select: none;
       -webkit-tap-highlight-color: transparent;
       padding-bottom: env(safe-area-inset-bottom, 20px);
-      padding-top: env(safe-area-inset-top, 0px);
       display: flex;
       flex-direction: column;
       min-height: 100vh;
@@ -40,11 +39,14 @@
       position: sticky;
       top: 0;
       z-index: 30;
-      background: rgba(249, 249, 249, 0.88);
+      background: rgba(249, 249, 249, 0.92);
       backdrop-filter: blur(25px);
       -webkit-backdrop-filter: blur(25px);
       border-bottom: 0.5px solid rgba(0, 0, 0, 0.12);
-      padding: 10px 16px;
+      padding-top: max(12px, env(safe-area-inset-top));
+      padding-bottom: 10px;
+      padding-left: 16px;
+      padding-right: 16px;
     }
 
     .nav-container {
@@ -601,7 +603,6 @@
 
       if (!grid) return;
 
-      // Preserve rearrangement visual class state on render
       if (isRearranging) {
         grid.classList.add('rearranging');
       } else {
@@ -680,7 +681,6 @@
         }
       });
 
-      // Double click / tap to edit flavor rows
       grid.querySelectorAll('.draggable-row[data-flavor-id]').forEach(row => {
         const flavorId = row.getAttribute('data-flavor-id');
         row.addEventListener('dblclick', (e) => {
@@ -689,7 +689,6 @@
         });
       });
 
-      // Double click / tap to edit divider rows
       grid.querySelectorAll('.divider-row[data-divider-id]').forEach(row => {
         const dividerId = row.getAttribute('data-divider-id');
         row.addEventListener('dblclick', (e) => {
