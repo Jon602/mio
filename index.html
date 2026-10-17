@@ -138,9 +138,9 @@
       justify-content: center;
     }
 
-    .rearranging .drag-handle,
-    .rearranging .divider-delete-btn {
-      display: flex; /* Shown when rearranging mode is active */
+    .editing .drag-handle,
+    .editing .divider-delete-btn {
+      display: flex; /* Shown when edit mode is active */
     }
     
     .drag-handle:active {
@@ -248,7 +248,6 @@
       width: 100%;
       padding: 3px 12px;
       gap: 6px;
-      cursor: pointer;
     }
     .divider-line {
       flex-grow: 1;
@@ -361,9 +360,9 @@
       </div>
 
       <div class="header-btns">
-        <button id="rearrangeBtn" onclick="toggleRearrange()" class="btn-press action-btn" title="Toggle Rearrange Mode">
-          <i class="fa-solid fa-bars" style="color: #007AFF;"></i>
-          <span>Rearrange</span>
+        <button id="editModeBtn" onclick="toggleEditMode()" class="btn-press action-btn" title="Toggle Edit Mode">
+          <i class="fa-solid fa-pen-to-square" style="color: #007AFF;"></i>
+          <span>Edit</span>
         </button>
         <button onclick="addDivider()" class="btn-press action-btn" title="Add Divider">
           <i class="fa-solid fa-grip-lines" style="color: #8e8e93;"></i>
@@ -500,7 +499,7 @@
     let db = null;
     let auth = null;
     let sortableInstance = null;
-    let isRearranging = false;
+    let isEditing = false;
 
     window.addEventListener('DOMContentLoaded', () => {
       renderFlavors();
@@ -510,17 +509,17 @@
       initApp();
     });
 
-    window.toggleRearrange = function() {
-      isRearranging = !isRearranging;
-      const btn = document.getElementById('rearrangeBtn');
+    window.toggleEditMode = function() {
+      isEditing = !isEditing;
+      const btn = document.getElementById('editModeBtn');
       const grid = document.getElementById('flavorGrid');
       
-      if (isRearranging) {
+      if (isEditing) {
         btn.classList.add('active');
-        grid.classList.add('rearranging');
+        grid.classList.add('editing');
       } else {
         btn.classList.remove('active');
-        grid.classList.remove('rearranging');
+        grid.classList.remove('editing');
       }
     };
 
@@ -616,10 +615,10 @@
 
       if (!grid) return;
 
-      if (isRearranging) {
-        grid.classList.add('rearranging');
+      if (isEditing) {
+        grid.classList.add('editing');
       } else {
-        grid.classList.remove('rearranging');
+        grid.classList.remove('editing');
       }
 
       window.flavors.forEach((item, idx) => {
@@ -694,17 +693,21 @@
         }
       });
 
+      // Double click / tap to edit flavor rows (only active when Edit mode is on)
       grid.querySelectorAll('.draggable-row[data-flavor-id]').forEach(row => {
         const flavorId = row.getAttribute('data-flavor-id');
         row.addEventListener('dblclick', (e) => {
+          if (!isEditing) return;
           if (e.target.closest('button') || e.target.closest('.drag-handle')) return;
           openEditModal(flavorId);
         });
       });
 
+      // Double click / tap to edit divider rows (only active when Edit mode is on)
       grid.querySelectorAll('.divider-row[data-divider-id]').forEach(row => {
         const dividerId = row.getAttribute('data-divider-id');
         row.addEventListener('dblclick', (e) => {
+          if (!isEditing) return;
           if (e.target.closest('button') || e.target.closest('.drag-handle')) return;
           editDivider(dividerId);
         });
