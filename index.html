@@ -281,7 +281,7 @@
           <p>Tap the <strong class="text-slate-900">Share button</strong> <i class="fa-solid fa-share-from-square text-iosBlue"></i> in Safari.</p>
         </div>
         <div class="flex items-start space-x-2.5 bg-slate-50 p-2.5 rounded-xl">
-          <span class="w-5 h-5 rounded-full bg-iosBlue text-white flex items-center justify-center text-[10px] shrink-0">2</span>
+          <span class="w-5 h-5 rounded-full bg-iosBlue text-white flex items-center justify-center font-bold text-[10px] shrink-0">2</span>
           <p>Select <strong class="text-slate-900">'Add to Home Screen'</strong> <i class="fa-regular fa-square-plus text-slate-800"></i>.</p>
         </div>
         <div class="flex items-start space-x-2.5 bg-slate-50 p-2.5 rounded-xl">
@@ -486,16 +486,16 @@
       grid.innerHTML = filtered.map((item) => {
         if (item.isDivider) {
           return `
-            <div data-id="${item.id}" class="draggable-row my-1 px-2.5 py-1.5 flex items-center justify-between w-full bg-slate-200/50 rounded-xl border border-slate-300/40 shadow-inner">
-              <div class="flex items-center space-x-2.5 flex-1 min-w-0">
+            <div data-id="${item.id}" class="draggable-row my-0.5 px-2 py-0.5 flex items-center justify-between w-full bg-slate-400/60 rounded-lg border border-slate-500/50">
+              <div class="flex items-center space-x-2 flex-1 min-w-0">
                 <!-- Drag Handle (Restricted dragging zone) -->
-                <div class="drag-handle text-slate-400 shrink-0 cursor-grab active:cursor-grabbing p-1">
-                  <i class="fa-solid fa-grip-vertical text-xs"></i>
+                <div class="drag-handle text-slate-500 shrink-0 cursor-grab active:cursor-grabbing p-0.5">
+                  <i class="fa-solid fa-grip-vertical text-[10px]"></i>
                 </div>
-                <div class="flex-grow h-[2px] bg-slate-300 rounded-full mx-2"></div>
+                <div class="flex-grow h-[2px] bg-slate-500 rounded-full mx-1.5"></div>
               </div>
-              <button onclick="deleteDivider('${item.id}')" class="btn-press w-5 h-5 rounded-full bg-slate-300/70 text-slate-500 hover:text-rose-600 flex items-center justify-center shrink-0 ml-2" title="Remove Divider">
-                <i class="fa-solid fa-xmark text-[9px]"></i>
+              <button onclick="deleteDivider('${item.id}')" class="btn-press w-4 h-4 rounded-full bg-slate-500/70 text-slate-200 hover:text-rose-300 flex items-center justify-center shrink-0 ml-1.5" title="Remove Divider">
+                <i class="fa-solid fa-xmark text-[8px]"></i>
               </button>
             </div>
           `;
