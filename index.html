@@ -470,7 +470,7 @@
         const rowBorder = 'border-white/85';
 
         return `
-          <div data-id="${item.id}" class="draggable-row glass-card rounded-2xl px-3 py-2.5 shadow-sm border ${rowBorder} flex items-center justify-between space-x-2 w-full">
+          <div data-id="${item.id}" class="draggable-row glass-card rounded-2xl px-3 py-2.5 shadow-sm border ${rowBorder} flex items-center justify-between space-x-2 w-full" data-flavor-id="${item.id}">
             <div class="flex items-center space-x-2.5 min-w-0 flex-1">
               <!-- Drag Handle (Restricted dragging zone) -->
               <div class="drag-handle text-slate-300 hover:text-slate-400 shrink-0 cursor-grab active:cursor-grabbing p-1">
@@ -482,10 +482,6 @@
             </div>
 
             <div class="flex items-center space-x-1.5 shrink-0">
-              <div class="text-right px-1 min-w-[32px] sm:min-w-[40px]">
-                <span class="text-base sm:text-lg font-black text-slate-900 leading-none">${item.stock}</span>
-              </div>
-
               <div class="flex items-center space-x-1">
                 <button onclick="adjustStock('${item.id}', -1)" class="btn-press w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-black text-sm sm:text-base flex items-center justify-center border border-slate-200/50 leading-none pb-0.5">
                   -
@@ -494,10 +490,9 @@
                   +
                 </button>
               </div>
-
-              <button onclick="openEditModal('${item.id}')" class="btn-press w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-slate-100 text-slate-400 hover:text-slate-700 flex items-center justify-center shrink-0 ml-0.5">
-                <i class="fa-solid fa-pen text-[9px] sm:text-[10px]"></i>
-              </button>
+              <div class="text-right px-1 min-w-[32px] sm:min-w-[40px]">
+                <span class="text-base sm:text-lg font-black text-slate-900 leading-none">${item.stock}</span>
+              </div>
             </div>
           </div>
         `;
@@ -524,6 +519,30 @@
           }
         });
       }
+
+      // Double-click / double-tap to edit flavour
+      grid.querySelectorAll('.draggable-row[data-flavor-id]').forEach(row => {
+        let lastTap = 0;
+        const flavorId = row.getAttribute('data-flavor-id');
+
+        row.addEventListener('dblclick', (e) => {
+          // Ignore if clicking buttons or drag handle
+          if (e.target.closest('button') || e.target.closest('.drag-handle')) return;
+          openEditModal(flavorId);
+        });
+
+        row.addEventListener('touchend', (e) => {
+          // Ignore if touching buttons or drag handle
+          if (e.target.closest('button') || e.target.closest('.drag-handle')) return;
+          const now = Date.now();
+          if (now - lastTap < 300) {
+            openEditModal(flavorId);
+            lastTap = 0;
+          } else {
+            lastTap = now;
+          }
+        }, { passive: true });
+      });
     };
 
     // Add Divider
