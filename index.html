@@ -723,20 +723,20 @@
         }
       });
 
-      // Double click / tap to edit flavor rows (only active when Edit mode is on)
+      // Single click / tap to edit flavor rows (only active when Edit mode is on)
       grid.querySelectorAll('.draggable-row[data-flavor-id]').forEach(row => {
         const flavorId = row.getAttribute('data-flavor-id');
-        row.addEventListener('dblclick', (e) => {
+        row.addEventListener('click', (e) => {
           if (!isEditing) return;
           if (e.target.closest('button') || e.target.closest('.drag-handle')) return;
           openEditModal(flavorId);
         });
       });
 
-      // Double click / tap to edit divider rows (only active when Edit mode is on)
+      // Single click / tap to edit divider rows (only active when Edit mode is on)
       grid.querySelectorAll('.divider-row[data-divider-id]').forEach(row => {
         const dividerId = row.getAttribute('data-divider-id');
-        row.addEventListener('dblclick', (e) => {
+        row.addEventListener('click', (e) => {
           if (!isEditing) return;
           if (e.target.closest('button') || e.target.closest('.drag-handle')) return;
           editDivider(dividerId);
@@ -926,15 +926,6 @@
       const rowH = Math.floor(Math.max(minRow, Math.min(maxRow, (avail - gap * (n - 1)) / n)));
       grid.style.setProperty('--row-h', rowH + 'px');
       grid.style.setProperty('--fit-font', Math.max(11, Math.min(15, rowH * 0.5)) + 'px');
-
-      // Colour the counts so low stock stands out at a glance
-      grid.querySelectorAll('.draggable-row[data-flavor-id]').forEach(row => {
-        const item = window.flavors.find(f => f.id === row.getAttribute('data-flavor-id'));
-        const num = row.querySelector('.stock-num');
-        if (!item || !num) return;
-        const stock = Number(item.stock) || 0;
-        num.style.color = stock <= 0 ? '#FF3B30' : stock <= 2 ? '#FF9500' : '';
-      });
     }
 
     window.toggleCompact = function() {
