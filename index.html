@@ -24,8 +24,8 @@
       padding: 0;
     }
     body {
-      background-color: #F2F2F7;
-      color: #1c1c1e;
+      background-color: #F5EFEB;
+      color: #2D1E12;
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", Inter, sans-serif;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
@@ -39,8 +39,8 @@
       position: sticky;
       top: 0;
       z-index: 30;
-      background: #F9F9F9;
-      border-bottom: 0.5px solid rgba(0, 0, 0, 0.12);
+      background: #3B291A;
+      border-bottom: 0.5px solid rgba(255, 255, 255, 0.15);
       padding-top: max(10px, env(safe-area-inset-top));
       padding-bottom: 10px;
       padding-left: 16px;
@@ -67,10 +67,10 @@
       background: rgba(255, 255, 255, 0.90);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(59, 41, 26, 0.12);
       border-radius: 14px;
       padding: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      box-shadow: 0 2px 8px rgba(59,41,26,0.04);
     }
 
     .stats-grid {
@@ -87,7 +87,7 @@
     .stat-title {
       font-size: 10px;
       font-weight: 700;
-      color: #8e8e93;
+      color: #8C7B70;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
@@ -95,7 +95,7 @@
     .stat-value {
       font-size: 20px;
       font-weight: 900;
-      color: #1c1c1e;
+      color: #3B291A;
       margin-top: 1px;
     }
 
@@ -109,38 +109,37 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: rgba(255, 255, 255, 0.90);
+      background: rgba(255, 255, 255, 0.95);
       border-radius: 12px;
       padding: 6px 12px;
-      border: 1px solid rgba(255, 255, 255, 0.8);
-      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+      border: 1px solid rgba(59, 41, 26, 0.1);
+      box-shadow: 0 1px 2px rgba(59,41,26,0.04);
     }
 
-    /* Grab Handle & Divider Delete Visibility Control */
     .drag-handle {
-      color: #aeaeb2;
+      color: #8C7B70;
       cursor: grab;
       padding: 4px;
       margin-right: 6px;
       font-size: 13px;
-      display: none; /* Hidden by default */
+      display: none;
     }
     .divider-delete-btn {
       border: none;
-      background: #e5e5ea;
+      background: rgba(232, 119, 26, 0.15);
       width: 18px;
       height: 18px;
       border-radius: 50%;
       cursor: pointer;
-      color: #3a3a3c;
-      display: none; /* Hidden by default */
+      color: #E8771A;
+      display: none;
       align-items: center;
       justify-content: center;
     }
 
     .editing .drag-handle,
     .editing .divider-delete-btn {
-      display: flex; /* Shown when edit mode is active */
+      display: flex;
     }
     
     .drag-handle:active {
@@ -150,7 +149,7 @@
     .flavor-name {
       font-weight: 700;
       font-size: 14px;
-      color: #1c1c1e;
+      color: #2D1E12;
       word-break: break-word;
     }
 
@@ -165,20 +164,20 @@
       width: 28px;
       height: 28px;
       border-radius: 8px;
-      border: 1px solid rgba(0,0,0,0.1);
+      border: 1px solid rgba(59, 41, 26, 0.15);
       font-weight: 900;
       font-size: 15px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #f2f2f7;
-      color: #1c1c1e;
+      background: #F5EFEB;
+      color: #3B291A;
       cursor: pointer;
     }
     .btn-count.plus {
-      background: rgba(0, 122, 255, 0.1);
-      color: #007AFF;
-      border-color: rgba(0, 122, 255, 0.2);
+      background: rgba(232, 119, 26, 0.15);
+      color: #E8771A;
+      border-color: rgba(232, 119, 26, 0.3);
     }
 
     .stock-box {
@@ -193,6 +192,7 @@
     .stock-num {
       font-size: 16px;
       font-weight: 900;
+      color: #3B291A;
     }
 
     .btn-press {
@@ -213,35 +213,35 @@
     .action-btn {
       padding: 5px 10px;
       border-radius: 16px;
-      background: rgba(255,255,255,0.8);
-      border: 1px solid #d1d1d6;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
       font-size: 11px;
       font-weight: 600;
-      color: #3a3a3c;
+      color: #FFFFFF;
       display: flex;
       align-items: center;
       gap: 4px;
     }
     .action-btn.active {
-      background: rgba(0, 122, 255, 0.15);
-      border-color: #007AFF;
-      color: #007AFF;
+      background: #E8771A;
+      border-color: #E8771A;
+      color: #FFFFFF;
     }
 
     .add-flavor-btn {
       width: 30px;
       height: 30px;
       border-radius: 50%;
-      background: #007AFF;
+      background: #E8771A;
       color: white;
       border: none;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 11px;
+      box-shadow: 0 2px 5px rgba(232, 119, 26, 0.4);
     }
 
-    /* Divider Row Styling */
     .divider-row {
       display: flex;
       align-items: center;
@@ -252,24 +252,24 @@
     .divider-line {
       flex-grow: 1;
       height: 2px;
-      background-color: #1c1c1e;
+      background-color: #3B291A;
+      opacity: 0.3;
       border-radius: 2px;
     }
     .divider-text {
       font-size: 10px;
       font-weight: 800;
-      color: #1c1c1e;
+      color: #3B291A;
       text-transform: uppercase;
       letter-spacing: 0.8px;
       padding: 0 6px;
       white-space: nowrap;
     }
 
-    /* Modals */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.4);
+      background: rgba(59,41,26,0.5);
       backdrop-filter: blur(4px);
       z-index: 50;
       display: flex;
@@ -291,6 +291,7 @@
     .modal-title {
       font-size: 16px;
       font-weight: 700;
+      color: #3B291A;
       margin-bottom: 12px;
     }
     .input-group {
@@ -300,7 +301,7 @@
       display: block;
       font-size: 10px;
       font-weight: 700;
-      color: #8e8e93;
+      color: #8C7B70;
       text-transform: uppercase;
       margin-bottom: 4px;
     }
@@ -312,6 +313,9 @@
       font-size: 14px;
       outline: none;
     }
+    .input-group input:focus {
+      border-color: #E8771A;
+    }
     .modal-actions {
       display: flex;
       gap: 8px;
@@ -321,7 +325,7 @@
       flex: 1;
       padding: 10px;
       border-radius: 12px;
-      background: #007AFF;
+      background: #E8771A;
       color: white;
       border: none;
       font-weight: 700;
@@ -332,8 +336,8 @@
       flex: 1;
       padding: 10px;
       border-radius: 12px;
-      background: #f2f2f7;
-      color: #3a3a3c;
+      background: #F5EFEB;
+      color: #3B291A;
       border: 1px solid #c7c7cc;
       font-weight: 700;
       font-size: 13px;
@@ -343,7 +347,6 @@
       display: none !important;
     }
 
-    /* Compact overview mode: single column, tight rows, no dividers */
     #flavorGrid.compact { gap: 2px; }
     .compact .divider-row { display: none !important; }
     .compact .draggable-row {
@@ -378,23 +381,23 @@
       <div style="display: flex; align-items: center; gap: 8px;">
         <img src="./mio-circle.png" alt="Logo" width="32" height="32" style="width: 32px; height: 32px; border-radius: 10px; object-fit: cover; box-shadow: 0 3px 8px rgba(0,0,0,0.15);" onError="this.onerror=null;this.src='https://img.icons8.com/3d-fluency/180/ice-cream-cone.png';">
         <div>
-          <h1 style="font-size: 15px; font-weight: 800; line-height: 1.1;">miogelato</h1>
-          <p id="syncStatus" style="font-size: 10px; color: #8e8e93; font-weight: 500;">
-            <i class="fa-solid fa-circle-notch fa-spin" style="color: #007AFF;"></i> Loading app...
+          <h1 style="font-size: 15px; font-weight: 800; line-height: 1.1; color: #FFFFFF;">miogelato</h1>
+          <p id="syncStatus" style="font-size: 10px; color: rgba(255,255,255,0.75); font-weight: 500;">
+            <i class="fa-solid fa-circle-notch fa-spin" style="color: #E8771A;"></i> Loading app...
           </p>
         </div>
       </div>
 
       <div class="header-btns">
         <button id="editModeBtn" onclick="toggleEditMode()" class="btn-press action-btn" title="Toggle Edit Mode">
-          <i class="fa-solid fa-pen-to-square" style="color: #007AFF;"></i>
+          <i class="fa-solid fa-pen-to-square" style="color: #E8771A;"></i>
           <span>Edit</span>
         </button>
         <button id="fitBtn" onclick="toggleCompact()" class="btn-press action-btn" title="Fit everything on one screen">
-          <i class="fa-solid fa-compress" style="color: #007AFF;"></i>
+          <i class="fa-solid fa-compress" style="color: #E8771A;"></i>
         </button>
         <button onclick="addDivider()" class="btn-press action-btn" title="Add Divider">
-          <i class="fa-solid fa-grip-lines" style="color: #8e8e93;"></i>
+          <i class="fa-solid fa-grip-lines" style="color: rgba(255,255,255,0.8);"></i>
         </button>
         <button onclick="openAddFlavorModal()" class="btn-press add-flavor-btn" title="Add New Flavor">
           <i class="fa-solid fa-plus"></i>
@@ -405,7 +408,6 @@
 
   <!-- Main Content -->
   <main>
-    <!-- Stats Dashboard -->
     <section class="stats-grid">
       <div class="glass-card stat-box">
         <p class="stat-title">Total Tubs</p>
@@ -417,13 +419,12 @@
       </div>
     </section>
 
-    <!-- Flavor List -->
     <section id="flavorGrid">
       <!-- Rendered via JS -->
     </section>
 
-    <div id="emptyState" class="hidden" style="text-align: center; padding: 40px 0; color: #8e8e93;">
-      <i class="fa-solid fa-box-open" style="font-size: 36px; margin-bottom: 8px;"></i>
+    <div id="emptyState" class="hidden" style="text-align: center; padding: 40px 0; color: #8C7B70;">
+      <i class="fa-solid fa-box-open" style="font-size: 36px; margin-bottom: 8px; color: #E8771A;"></i>
       <p style="font-size: 13px; font-weight: 600;">No flavors found</p>
     </div>
   </main>
@@ -433,7 +434,7 @@
     <div class="modal-card">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
         <h3 class="modal-title" style="margin:0;">Edit Flavor</h3>
-        <button onclick="closeEditModal()" style="background:#f2f2f7; border:none; width:28px; height:28px; border-radius:50%; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+        <button onclick="closeEditModal()" style="background:#F5EFEB; border:none; width:28px; height:28px; border-radius:50%; cursor:pointer; color:#3B291A;"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <input type="hidden" id="editFlavorId">
       <div class="input-group">
@@ -457,7 +458,7 @@
     <div class="modal-card">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
         <h3 class="modal-title" style="margin:0;">Add New Flavor</h3>
-        <button onclick="closeAddModal()" style="background:#f2f2f7; border:none; width:28px; height:28px; border-radius:50%; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+        <button onclick="closeAddModal()" style="background:#F5EFEB; border:none; width:28px; height:28px; border-radius:50%; cursor:pointer; color:#3B291A;"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="input-group">
         <label>Flavor Name</label>
@@ -478,7 +479,7 @@
   <div id="pwaModal" class="modal-overlay hidden" style="align-items: flex-end;">
     <div class="modal-card" style="border-radius: 24px 24px 0 0;">
       <h3 class="modal-title">Install miogelato</h3>
-      <p style="font-size: 12px; color: #636366; margin-bottom: 12px;">Tap the Share button <i class="fa-solid fa-share-from-square" style="color:#007AFF;"></i> in Safari, then select <strong>'Add to Home Screen'</strong>.</p>
+      <p style="font-size: 12px; color: #8C7B70; margin-bottom: 12px;">Tap the Share button <i class="fa-solid fa-share-from-square" style="color:#E8771A;"></i> in Safari, then select <strong>'Add to Home Screen'</strong>.</p>
       <button onclick="closePwaModal()" class="btn-main" style="width:100%;">Got it!</button>
     </div>
   </div>
@@ -634,9 +635,10 @@
     function updateSyncStatus(isLive, label) {
       const el = document.getElementById('syncStatus');
       if (!el) return;
+      // Updated cloud icon color to bright orange (#E8771A)
       el.innerHTML = isLive 
-        ? `<i class="fa-solid fa-cloud" style="color: #34C759;"></i> ${label}` 
-        : `<i class="fa-solid fa-circle-notch fa-spin" style="color: #007AFF;"></i> ${label}`;
+        ? `<i class="fa-solid fa-cloud" style="color: #E8771A;"></i> ${label}` 
+        : `<i class="fa-solid fa-circle-notch fa-spin" style="color: #E8771A;"></i> ${label}`;
     }
 
     window.renderFlavors = function() {
@@ -723,7 +725,6 @@
         }
       });
 
-      // Single click / tap to edit flavor rows (only active when Edit mode is on)
       grid.querySelectorAll('.draggable-row[data-flavor-id]').forEach(row => {
         const flavorId = row.getAttribute('data-flavor-id');
         row.addEventListener('click', (e) => {
@@ -733,7 +734,6 @@
         });
       });
 
-      // Single click / tap to edit divider rows (only active when Edit mode is on)
       grid.querySelectorAll('.divider-row[data-divider-id]').forEach(row => {
         const dividerId = row.getAttribute('data-divider-id');
         row.addEventListener('click', (e) => {
@@ -898,7 +898,6 @@
       }
     };
 
-    // ---- Fit-to-screen overview ----
     function applyCompact() {
       const grid = document.getElementById('flavorGrid');
       if (!grid) return;
@@ -922,7 +921,6 @@
       const avail = (window.visualViewport ? window.visualViewport.height : window.innerHeight) - top - bottomPad;
       const gap = 2, minRow = 24, maxRow = 40;
 
-      // Shrink rows to fit one screen if possible, but never below minRow (then it scrolls)
       const rowH = Math.floor(Math.max(minRow, Math.min(maxRow, (avail - gap * (n - 1)) / n)));
       grid.style.setProperty('--row-h', rowH + 'px');
       grid.style.setProperty('--fit-font', Math.max(11, Math.min(15, rowH * 0.5)) + 'px');
@@ -938,7 +936,6 @@
       applyCompact();
     };
 
-    // Re-fit after every render (sync updates, edits) and when the screen changes
     const baseRender = window.renderFlavors;
     window.renderFlavors = function() { baseRender(); applyCompact(); };
     window.addEventListener('resize', applyCompact);
