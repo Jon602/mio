@@ -24,8 +24,8 @@
       padding: 0;
     }
     body {
-      background-color: #F5EFEB;
-      color: #2D1E12;
+      background-color: #F8F5F0;
+      color: #3D2B1F;
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", Inter, sans-serif;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
@@ -39,8 +39,9 @@
       position: sticky;
       top: 0;
       z-index: 30;
-      background: #3B291A;
-      border-bottom: 0.5px solid rgba(255, 255, 255, 0.15);
+      background: #3D2B1F;
+      color: #FFFFFF;
+      border-bottom: 0.5px solid rgba(255, 255, 255, 0.12);
       padding-top: max(10px, env(safe-area-inset-top));
       padding-bottom: 10px;
       padding-left: 16px;
@@ -67,10 +68,10 @@
       background: rgba(255, 255, 255, 0.90);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(59, 41, 26, 0.12);
+      border: 1px solid rgba(220, 200, 180, 0.6);
       border-radius: 14px;
       padding: 10px;
-      box-shadow: 0 2px 8px rgba(59,41,26,0.04);
+      box-shadow: 0 2px 8px rgba(61,43,31,0.06);
     }
 
     .stats-grid {
@@ -87,7 +88,7 @@
     .stat-title {
       font-size: 10px;
       font-weight: 700;
-      color: #8C7B70;
+      color: #8C7355;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
@@ -95,7 +96,7 @@
     .stat-value {
       font-size: 20px;
       font-weight: 900;
-      color: #3B291A;
+      color: #3D2B1F;
       margin-top: 1px;
     }
 
@@ -112,34 +113,40 @@
       background: rgba(255, 255, 255, 0.95);
       border-radius: 12px;
       padding: 6px 12px;
-      border: 1px solid rgba(59, 41, 26, 0.1);
-      box-shadow: 0 1px 2px rgba(59,41,26,0.04);
+      border: 1px solid rgba(220, 200, 180, 0.7);
+      box-shadow: 0 1px 2px rgba(61,43,31,0.04);
+    }
+    
+    .editing .draggable-row,
+    .editing .divider-row {
+      cursor: pointer;
     }
 
+    /* Grab Handle & Divider Delete Visibility Control */
     .drag-handle {
-      color: #8C7B70;
+      color: #B59B82;
       cursor: grab;
       padding: 4px;
       margin-right: 6px;
       font-size: 13px;
-      display: none;
+      display: none; /* Hidden by default */
     }
     .divider-delete-btn {
       border: none;
-      background: rgba(232, 119, 26, 0.15);
+      background: #EFECE6;
       width: 18px;
       height: 18px;
       border-radius: 50%;
       cursor: pointer;
-      color: #E8771A;
-      display: none;
+      color: #3D2B1F;
+      display: none; /* Hidden by default */
       align-items: center;
       justify-content: center;
     }
 
     .editing .drag-handle,
     .editing .divider-delete-btn {
-      display: flex;
+      display: flex; /* Shown when edit mode is active */
     }
     
     .drag-handle:active {
@@ -149,7 +156,7 @@
     .flavor-name {
       font-weight: 700;
       font-size: 14px;
-      color: #2D1E12;
+      color: #3D2B1F;
       word-break: break-word;
     }
 
@@ -164,35 +171,42 @@
       width: 28px;
       height: 28px;
       border-radius: 8px;
-      border: 1px solid rgba(59, 41, 26, 0.15);
+      border: 1px solid rgba(61,43,31,0.12);
       font-weight: 900;
       font-size: 15px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #F5EFEB;
-      color: #3B291A;
+      background: #F4EFEA;
+      color: #3D2B1F;
       cursor: pointer;
     }
     .btn-count.plus {
-      background: rgba(232, 119, 26, 0.15);
-      color: #E8771A;
-      border-color: rgba(232, 119, 26, 0.3);
+      background: rgba(235, 131, 52, 0.12);
+      color: #EB8334;
+      border-color: rgba(235, 131, 52, 0.3);
     }
 
     .stock-box {
-      min-width: 24px;
-      text-align: left;
+      min-width: 52px;
+      text-align: right;
       display: flex;
-      justify-content: flex-start;
-      align-items: center;
+      justify-content: flex-end;
+      align-items: baseline;
+      gap: 3px;
       margin-right: 2px;
     }
 
     .stock-num {
       font-size: 16px;
       font-weight: 900;
-      color: #3B291A;
+      color: #3D2B1F;
+    }
+
+    .capacity-num {
+      font-size: 11px;
+      font-weight: 500;
+      color: #8C7355;
     }
 
     .btn-press {
@@ -213,8 +227,8 @@
     .action-btn {
       padding: 5px 10px;
       border-radius: 16px;
-      background: rgba(255,255,255,0.15);
-      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
       font-size: 11px;
       font-weight: 600;
       color: #FFFFFF;
@@ -223,8 +237,8 @@
       gap: 4px;
     }
     .action-btn.active {
-      background: #E8771A;
-      border-color: #E8771A;
+      background: rgba(235, 131, 52, 0.3);
+      border-color: #EB8334;
       color: #FFFFFF;
     }
 
@@ -232,44 +246,45 @@
       width: 30px;
       height: 30px;
       border-radius: 50%;
-      background: #E8771A;
+      background: #EB8334;
       color: white;
       border: none;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 11px;
-      box-shadow: 0 2px 5px rgba(232, 119, 26, 0.4);
+      box-shadow: 0 2px 6px rgba(235, 131, 52, 0.4);
     }
 
+    /* Divider Row Styling */
     .divider-row {
       display: flex;
       align-items: center;
       width: 100%;
-      padding: 3px 12px;
-      gap: 6px;
+      padding: 6px 12px;
+      gap: 8px;
     }
     .divider-line {
       flex-grow: 1;
-      height: 2px;
-      background-color: #3B291A;
-      opacity: 0.3;
+      height: 1.5px;
+      background-color: #A38A71;
       border-radius: 2px;
     }
     .divider-text {
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 800;
-      color: #3B291A;
+      color: #594435;
       text-transform: uppercase;
-      letter-spacing: 0.8px;
+      letter-spacing: 1px;
       padding: 0 6px;
       white-space: nowrap;
     }
 
+    /* Modals */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(59,41,26,0.5);
+      background: rgba(0,0,0,0.5);
       backdrop-filter: blur(4px);
       z-index: 50;
       display: flex;
@@ -281,17 +296,17 @@
       display: none;
     }
     .modal-card {
-      background: white;
+      background: #FFFDF9;
       border-radius: 24px;
       max-width: 400px;
       width: 100%;
       padding: 20px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      box-shadow: 0 20px 40px rgba(61,43,31,0.2);
     }
     .modal-title {
       font-size: 16px;
       font-weight: 700;
-      color: #3B291A;
+      color: #3D2B1F;
       margin-bottom: 12px;
     }
     .input-group {
@@ -301,7 +316,7 @@
       display: block;
       font-size: 10px;
       font-weight: 700;
-      color: #8C7B70;
+      color: #8C7355;
       text-transform: uppercase;
       margin-bottom: 4px;
     }
@@ -309,12 +324,11 @@
       width: 100%;
       padding: 10px;
       border-radius: 12px;
-      border: 1px solid #c7c7cc;
+      border: 1px solid #D5C6B8;
       font-size: 14px;
       outline: none;
-    }
-    .input-group input:focus {
-      border-color: #E8771A;
+      background: #FFF;
+      color: #3D2B1F;
     }
     .modal-actions {
       display: flex;
@@ -325,7 +339,7 @@
       flex: 1;
       padding: 10px;
       border-radius: 12px;
-      background: #E8771A;
+      background: #EB8334;
       color: white;
       border: none;
       font-weight: 700;
@@ -336,9 +350,9 @@
       flex: 1;
       padding: 10px;
       border-radius: 12px;
-      background: #F5EFEB;
-      color: #3B291A;
-      border: 1px solid #c7c7cc;
+      background: #F4EFEA;
+      color: #3D2B1F;
+      border: 1px solid #D5C6B8;
       font-weight: 700;
       font-size: 13px;
       cursor: pointer;
@@ -347,6 +361,7 @@
       display: none !important;
     }
 
+    /* Compact overview mode: single column, tight rows, no dividers */
     #flavorGrid.compact { gap: 2px; }
     .compact .divider-row { display: none !important; }
     .compact .draggable-row {
@@ -369,6 +384,7 @@
     }
     .compact .stock-box { margin-right: 0; justify-content: flex-end; }
     .compact .stock-num { font-size: var(--fit-font, 12px); }
+    .compact .capacity-num { font-size: calc(var(--fit-font, 12px) * 0.75); }
     body.compact-mode main { padding-top: 6px; padding-bottom: 6px; }
     body.compact-mode .stats-grid { display: none; }
   </style>
@@ -382,22 +398,22 @@
         <img src="./mio-circle.png" alt="Logo" width="32" height="32" style="width: 32px; height: 32px; border-radius: 10px; object-fit: cover; box-shadow: 0 3px 8px rgba(0,0,0,0.15);" onError="this.onerror=null;this.src='https://img.icons8.com/3d-fluency/180/ice-cream-cone.png';">
         <div>
           <h1 style="font-size: 15px; font-weight: 800; line-height: 1.1; color: #FFFFFF;">miogelato</h1>
-          <p id="syncStatus" style="font-size: 10px; color: rgba(255,255,255,0.75); font-weight: 500;">
-            <i class="fa-solid fa-circle-notch fa-spin" style="color: #E8771A;"></i> Loading app...
+          <p id="syncStatus" style="font-size: 10px; color: #E5CDBE; font-weight: 500;">
+            <i class="fa-solid fa-circle-notch fa-spin" style="color: #EB8334;"></i> Loading app...
           </p>
         </div>
       </div>
 
       <div class="header-btns">
         <button id="editModeBtn" onclick="toggleEditMode()" class="btn-press action-btn" title="Toggle Edit Mode">
-          <i class="fa-solid fa-pen-to-square" style="color: #E8771A;"></i>
+          <i class="fa-solid fa-pen-to-square" style="color: #EB8334;"></i>
           <span>Edit</span>
         </button>
         <button id="fitBtn" onclick="toggleCompact()" class="btn-press action-btn" title="Fit everything on one screen">
-          <i class="fa-solid fa-compress" style="color: #E8771A;"></i>
+          <i class="fa-solid fa-compress" style="color: #EB8334;"></i>
         </button>
         <button onclick="addDivider()" class="btn-press action-btn" title="Add Divider">
-          <i class="fa-solid fa-grip-lines" style="color: rgba(255,255,255,0.8);"></i>
+          <i class="fa-solid fa-grip-lines" style="color: #E5CDBE;"></i>
         </button>
         <button onclick="openAddFlavorModal()" class="btn-press add-flavor-btn" title="Add New Flavor">
           <i class="fa-solid fa-plus"></i>
@@ -408,6 +424,7 @@
 
   <!-- Main Content -->
   <main>
+    <!-- Stats Dashboard -->
     <section class="stats-grid">
       <div class="glass-card stat-box">
         <p class="stat-title">Total Tubs</p>
@@ -419,12 +436,13 @@
       </div>
     </section>
 
+    <!-- Flavor List -->
     <section id="flavorGrid">
       <!-- Rendered via JS -->
     </section>
 
-    <div id="emptyState" class="hidden" style="text-align: center; padding: 40px 0; color: #8C7B70;">
-      <i class="fa-solid fa-box-open" style="font-size: 36px; margin-bottom: 8px; color: #E8771A;"></i>
+    <div id="emptyState" class="hidden" style="text-align: center; padding: 40px 0; color: #8C7355;">
+      <i class="fa-solid fa-box-open" style="font-size: 36px; margin-bottom: 8px;"></i>
       <p style="font-size: 13px; font-weight: 600;">No flavors found</p>
     </div>
   </main>
@@ -434,7 +452,7 @@
     <div class="modal-card">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
         <h3 class="modal-title" style="margin:0;">Edit Flavor</h3>
-        <button onclick="closeEditModal()" style="background:#F5EFEB; border:none; width:28px; height:28px; border-radius:50%; cursor:pointer; color:#3B291A;"><i class="fa-solid fa-xmark"></i></button>
+        <button onclick="closeEditModal()" style="background:#F4EFEA; border:none; width:28px; height:28px; border-radius:50%; cursor:pointer; color:#3D2B1F;"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <input type="hidden" id="editFlavorId">
       <div class="input-group">
@@ -445,8 +463,12 @@
         <label>Stock Count</label>
         <input type="number" id="editFlavorStock" min="0">
       </div>
+      <div class="input-group">
+        <label>Storage Capacity</label>
+        <input type="number" id="editFlavorCapacity" min="0">
+      </div>
       <div style="display: flex; gap: 8px; margin-top: 16px;">
-        <button onclick="deleteCurrentFlavor()" style="padding: 10px 14px; border-radius: 12px; background: #fff; border: 1px solid #ff3b30; color: #ff3b30; font-weight: 700; cursor:pointer;">Delete</button>
+        <button onclick="deleteCurrentFlavor()" style="padding: 10px 14px; border-radius: 12px; background: #fff; border: 1px solid #D9534F; color: #D9534F; font-weight: 700; cursor:pointer;">Delete</button>
         <button onclick="closeEditModal()" class="btn-secondary">Cancel</button>
         <button onclick="saveFlavorEdit()" class="btn-main">Save</button>
       </div>
@@ -458,7 +480,7 @@
     <div class="modal-card">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
         <h3 class="modal-title" style="margin:0;">Add New Flavor</h3>
-        <button onclick="closeAddModal()" style="background:#F5EFEB; border:none; width:28px; height:28px; border-radius:50%; cursor:pointer; color:#3B291A;"><i class="fa-solid fa-xmark"></i></button>
+        <button onclick="closeAddModal()" style="background:#F4EFEA; border:none; width:28px; height:28px; border-radius:50%; cursor:pointer; color:#3D2B1F;"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="input-group">
         <label>Flavor Name</label>
@@ -467,6 +489,10 @@
       <div class="input-group">
         <label>Initial Stock</label>
         <input type="number" id="addFlavorStock" value="10" min="0">
+      </div>
+      <div class="input-group">
+        <label>Storage Capacity</label>
+        <input type="number" id="addFlavorCapacity" value="15" min="0">
       </div>
       <div class="modal-actions">
         <button onclick="closeAddModal()" class="btn-secondary">Cancel</button>
@@ -479,7 +505,7 @@
   <div id="pwaModal" class="modal-overlay hidden" style="align-items: flex-end;">
     <div class="modal-card" style="border-radius: 24px 24px 0 0;">
       <h3 class="modal-title">Install miogelato</h3>
-      <p style="font-size: 12px; color: #8C7B70; margin-bottom: 12px;">Tap the Share button <i class="fa-solid fa-share-from-square" style="color:#E8771A;"></i> in Safari, then select <strong>'Add to Home Screen'</strong>.</p>
+      <p style="font-size: 12px; color: #8C7355; margin-bottom: 12px;">Tap the Share button <i class="fa-solid fa-share-from-square" style="color:#EB8334;"></i> in Safari, then select <strong>'Add to Home Screen'</strong>.</p>
       <button onclick="closePwaModal()" class="btn-main" style="width:100%;">Got it!</button>
     </div>
   </div>
@@ -491,41 +517,45 @@
     import { getFirestore, collection, doc, onSnapshot, setDoc, updateDoc, deleteDoc, writeBatch } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     const DEFAULT_30_FLAVORS = [
-      { id: 'f1', name: 'Vanilla Bean', stock: 12, order: 0, isDivider: false },
-      { id: 'f2', name: 'Double Chocolate', stock: 8, order: 1, isDivider: false },
-      { id: 'f3', name: 'Strawberry Cream', stock: 15, order: 2, isDivider: false },
-      { id: 'f4', name: 'Mint Choc Chip', stock: 4, order: 3, isDivider: false },
-      { id: 'f5', name: 'Salted Caramel', stock: 6, order: 4, isDivider: false },
-      { id: 'f6', name: 'Cookies & Cream', stock: 10, order: 5, isDivider: false },
-      { id: 'f7', name: 'Mango Sorbet', stock: 3, order: 6, isDivider: false },
-      { id: 'f8', name: 'Pistachio', stock: 7, order: 7, isDivider: false },
-      { id: 'f9', name: 'Bubblegum', stock: 2, order: 8, isDivider: false },
-      { id: 'f10', name: 'Rum & Raisin', stock: 9, order: 9, isDivider: false },
-      { id: 'f11', name: 'Rocky Road', stock: 11, order: 10, isDivider: false },
-      { id: 'f12', name: 'Raspberry Ripple', stock: 5, order: 11, isDivider: false },
-      { id: 'f13', name: 'Espresso Fudge', stock: 1, order: 12, isDivider: false },
-      { id: 'f14', name: 'Coconut Cream', stock: 8, order: 13, isDivider: false },
-      { id: 'f15', name: 'Lemon Sorbet', stock: 14, order: 14, isDivider: false },
-      { id: 'f16', name: 'Honeycomb Crunch', stock: 4, order: 15, isDivider: false },
-      { id: 'f17', name: 'Banana Split', stock: 6, order: 16, isDivider: false },
-      { id: 'f18', name: 'Peanut Butter Swirl', stock: 0, order: 17, isDivider: false },
-      { id: 'f19', name: 'Blackcurrant Sorbet', stock: 7, order: 18, isDivider: false },
-      { id: 'f20', name: 'Passionfruit', stock: 9, order: 19, isDivider: false },
-      { id: 'f21', name: 'Cherry Bakewell', stock: 5, order: 20, isDivider: false },
-      { id: 'f22', name: 'Cotton Candy', stock: 12, order: 21, isDivider: false },
-      { id: 'f23', name: 'Matcha Green Tea', stock: 4, order: 22, isDivider: false },
-      { id: 'f24', name: 'Nutella Hazelnut', stock: 15, order: 23, isDivider: false },
-      { id: 'f25', name: 'Peach Melba', stock: 8, order: 24, isDivider: false },
-      { id: 'f26', name: 'Blueberry Cheesecake', stock: 3, order: 25, isDivider: false },
-      { id: 'f27', name: 'Praline Hazelnut', stock: 10, order: 26, isDivider: false },
-      { id: 'f28', name: 'Biscoff / Speculoos', stock: 2, order: 27, isDivider: false },
-      { id: 'f29', name: 'Salted Fudge', stock: 7, order: 28, isDivider: false },
-      { id: 'f30', name: 'Dulce de Leche', stock: 11, order: 29, isDivider: false }
+      { id: 'f1', name: 'Vanilla Bean', stock: 12, capacity: 15, order: 0, isDivider: false },
+      { id: 'f2', name: 'Double Chocolate', stock: 8, capacity: 15, order: 1, isDivider: false },
+      { id: 'f3', name: 'Strawberry Cream', stock: 15, capacity: 15, order: 2, isDivider: false },
+      { id: 'f4', name: 'Mint Choc Chip', stock: 4, capacity: 15, order: 3, isDivider: false },
+      { id: 'f5', name: 'Salted Caramel', stock: 6, capacity: 15, order: 4, isDivider: false },
+      { id: 'f6', name: 'Cookies & Cream', stock: 10, capacity: 15, order: 5, isDivider: false },
+      { id: 'f7', name: 'Mango Sorbet', stock: 3, capacity: 15, order: 6, isDivider: false },
+      { id: 'f8', name: 'Pistachio', stock: 7, capacity: 15, order: 7, isDivider: false },
+      { id: 'f9', name: 'Bubblegum', stock: 2, capacity: 15, order: 8, isDivider: false },
+      { id: 'f10', name: 'Rum & Raisin', stock: 9, capacity: 15, order: 9, isDivider: false },
+      { id: 'f11', name: 'Rocky Road', stock: 11, capacity: 15, order: 10, isDivider: false },
+      { id: 'f12', name: 'Raspberry Ripple', stock: 5, capacity: 15, order: 11, isDivider: false },
+      { id: 'f13', name: 'Espresso Fudge', stock: 1, capacity: 15, order: 12, isDivider: false },
+      { id: 'f14', name: 'Coconut Cream', stock: 8, capacity: 15, order: 13, isDivider: false },
+      { id: 'f15', name: 'Lemon Sorbet', stock: 14, capacity: 15, order: 14, isDivider: false },
+      { id: 'f16', name: 'Honeycomb Crunch', stock: 4, capacity: 15, order: 15, isDivider: false },
+      { id: 'f17', name: 'Banana Split', stock: 6, capacity: 15, order: 16, isDivider: false },
+      { id: 'f18', name: 'Peanut Butter Swirl', stock: 0, capacity: 15, order: 17, isDivider: false },
+      { id: 'f19', name: 'Blackcurrant Sorbet', stock: 7, capacity: 15, order: 18, isDivider: false },
+      { id: 'f20', name: 'Passionfruit', stock: 9, capacity: 15, order: 19, isDivider: false },
+      { id: 'f21', name: 'Cherry Bakewell', stock: 5, capacity: 15, order: 20, isDivider: false },
+      { id: 'f22', name: 'Cotton Candy', stock: 12, capacity: 15, order: 21, isDivider: false },
+      { id: 'f23', name: 'Matcha Green Tea', stock: 4, capacity: 15, order: 22, isDivider: false },
+      { id: 'f24', name: 'Nutella Hazelnut', stock: 15, capacity: 15, order: 23, isDivider: false },
+      { id: 'f25', name: 'Peach Melba', stock: 8, capacity: 15, order: 24, isDivider: false },
+      { id: 'f26', name: 'Blueberry Cheesecake', stock: 3, capacity: 15, order: 25, isDivider: false },
+      { id: 'f27', name: 'Praline Hazelnut', stock: 10, capacity: 15, order: 26, isDivider: false },
+      { id: 'f28', name: 'Biscoff / Speculoos', stock: 2, capacity: 15, order: 27, isDivider: false },
+      { id: 'f29', name: 'Salted Fudge', stock: 7, capacity: 15, order: 28, isDivider: false },
+      { id: 'f30', name: 'Dulce de Leche', stock: 11, capacity: 15, order: 29, isDivider: false }
     ];
 
     let savedLocal = localStorage.getItem('miogelato_local_flavors');
     window.flavors = savedLocal ? JSON.parse(savedLocal) : JSON.parse(JSON.stringify(DEFAULT_30_FLAVORS));
     
+    window.flavors.forEach(item => {
+      if (item.capacity === undefined) item.capacity = 15;
+    });
+
     let db = null;
     let auth = null;
     let sortableInstance = null;
@@ -591,7 +621,9 @@
         if (!snapshot.empty) {
           const list = [];
           snapshot.forEach(docSnap => {
-            list.push({ id: docSnap.id, ...docSnap.data() });
+            const data = docSnap.data();
+            if (data.capacity === undefined) data.capacity = 15;
+            list.push({ id: docSnap.id, ...data });
           });
           list.sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
           window.flavors = list;
@@ -613,10 +645,12 @@
         const batch = writeBatch(db);
         window.flavors.forEach((item, index) => {
           if (item.order === undefined) item.order = index;
+          if (item.capacity === undefined) item.capacity = 15;
           const docRef = doc(db, 'icecream_flavors', item.id);
           batch.set(docRef, { 
             name: item.name, 
-            stock: item.stock, 
+            stock: item.stock,
+            capacity: item.capacity,
             order: item.order, 
             isDivider: !!item.isDivider 
           });
@@ -635,10 +669,9 @@
     function updateSyncStatus(isLive, label) {
       const el = document.getElementById('syncStatus');
       if (!el) return;
-      // Updated cloud icon color to bright orange (#E8771A)
       el.innerHTML = isLive 
-        ? `<i class="fa-solid fa-cloud" style="color: #E8771A;"></i> ${label}` 
-        : `<i class="fa-solid fa-circle-notch fa-spin" style="color: #E8771A;"></i> ${label}`;
+        ? `<i class="fa-solid fa-cloud" style="color: #EB8334;"></i> ${label}` 
+        : `<i class="fa-solid fa-circle-notch fa-spin" style="color: #EB8334;"></i> ${label}`;
     }
 
     window.renderFlavors = function() {
@@ -655,6 +688,7 @@
 
       window.flavors.forEach((item, idx) => {
         if (item.order === undefined) item.order = idx;
+        if (item.capacity === undefined) item.capacity = 15;
       });
 
       const nonDividers = window.flavors.filter(f => !f.isDivider);
@@ -696,6 +730,7 @@
             <div class="controls">
               <div class="stock-box">
                 <span class="stock-num">${item.stock}</span>
+                <span class="capacity-num">(${item.capacity})</span>
               </div>
               <div style="display: flex; gap: 3px;">
                 <button onclick="adjustStock('${item.id}', -1)" class="btn-press btn-count">-</button>
@@ -725,6 +760,7 @@
         }
       });
 
+      // Single click / tap to edit flavor rows (only active when Edit mode is on)
       grid.querySelectorAll('.draggable-row[data-flavor-id]').forEach(row => {
         const flavorId = row.getAttribute('data-flavor-id');
         row.addEventListener('click', (e) => {
@@ -734,6 +770,7 @@
         });
       });
 
+      // Single click / tap to edit divider rows (only active when Edit mode is on)
       grid.querySelectorAll('.divider-row[data-divider-id]').forEach(row => {
         const dividerId = row.getAttribute('data-divider-id');
         row.addEventListener('click', (e) => {
@@ -823,6 +860,7 @@
       document.getElementById('editFlavorId').value = item.id;
       document.getElementById('editFlavorName').value = item.name;
       document.getElementById('editFlavorStock').value = item.stock;
+      document.getElementById('editFlavorCapacity').value = item.capacity !== undefined ? item.capacity : 15;
       document.getElementById('editModal').classList.remove('hidden');
     };
 
@@ -834,19 +872,21 @@
       const id = document.getElementById('editFlavorId').value;
       const name = document.getElementById('editFlavorName').value.trim();
       const stock = parseInt(document.getElementById('editFlavorStock').value, 10) || 0;
+      const capacity = parseInt(document.getElementById('editFlavorCapacity').value, 10) || 0;
       if (!name) return;
 
       const item = window.flavors.find(f => f.id === id);
       if (item) {
         item.name = name;
         item.stock = stock;
+        item.capacity = capacity;
         saveToLocalStorage();
         renderFlavors();
       }
       closeEditModal();
       if (db) {
         try {
-          await updateDoc(doc(db, 'icecream_flavors', id), { name, stock });
+          await updateDoc(doc(db, 'icecream_flavors', id), { name, stock, capacity });
         } catch (err) { console.error(err); }
       }
     };
@@ -871,6 +911,7 @@
     window.openAddFlavorModal = function() {
       document.getElementById('addFlavorName').value = '';
       document.getElementById('addFlavorStock').value = '10';
+      document.getElementById('addFlavorCapacity').value = '15';
       document.getElementById('addModal').classList.remove('hidden');
     };
     window.closeAddModal = function() {
@@ -880,11 +921,12 @@
     window.saveNewFlavor = async function() {
       const name = document.getElementById('addFlavorName').value.trim();
       const stock = parseInt(document.getElementById('addFlavorStock').value, 10) || 0;
+      const capacity = parseInt(document.getElementById('addFlavorCapacity').value, 10) || 15;
       if (!name) return;
 
       const newId = 'f_' + Date.now();
       const newOrder = window.flavors.length;
-      const newFlavor = { id: newId, name, stock, order: newOrder, isDivider: false };
+      const newFlavor = { id: newId, name, stock, capacity, order: newOrder, isDivider: false };
 
       window.flavors.push(newFlavor);
       saveToLocalStorage();
@@ -893,11 +935,12 @@
 
       if (db) {
         try {
-          await setDoc(doc(db, 'icecream_flavors', newId), { name, stock, order: newOrder, isDivider: false });
+          await setDoc(doc(db, 'icecream_flavors', newId), { name, stock, capacity, order: newOrder, isDivider: false });
         } catch (err) { console.error(err); }
       }
     };
 
+    // ---- Fit-to-screen overview ----
     function applyCompact() {
       const grid = document.getElementById('flavorGrid');
       if (!grid) return;
@@ -921,9 +964,19 @@
       const avail = (window.visualViewport ? window.visualViewport.height : window.innerHeight) - top - bottomPad;
       const gap = 2, minRow = 24, maxRow = 40;
 
+      // Shrink rows to fit one screen if possible, but never below minRow (then it scrolls)
       const rowH = Math.floor(Math.max(minRow, Math.min(maxRow, (avail - gap * (n - 1)) / n)));
       grid.style.setProperty('--row-h', rowH + 'px');
       grid.style.setProperty('--fit-font', Math.max(11, Math.min(15, rowH * 0.5)) + 'px');
+
+      // Colour the counts so low stock stands out at a glance
+      grid.querySelectorAll('.draggable-row[data-flavor-id]').forEach(row => {
+        const item = window.flavors.find(f => f.id === row.getAttribute('data-flavor-id'));
+        const num = row.querySelector('.stock-num');
+        if (!item || !num) return;
+        const stock = Number(item.stock) || 0;
+        num.style.color = stock <= 0 ? '#D9534F' : stock <= 2 ? '#EB8334' : '';
+      });
     }
 
     window.toggleCompact = function() {
@@ -936,6 +989,7 @@
       applyCompact();
     };
 
+    // Re-fit after every render (sync updates, edits) and when the screen changes
     const baseRender = window.renderFlavors;
     window.renderFlavors = function() { baseRender(); applyCompact(); };
     window.addEventListener('resize', applyCompact);
